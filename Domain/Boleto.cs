@@ -10,6 +10,7 @@ namespace Domain
     public class Boleto
     {
         [Key]
+        public int IdBoleto { get; set; }
         public Conta ContaOrigem { get; set; }
         public DateTime DtVencimento { get; set; }
         public double Valor { get; set; }
