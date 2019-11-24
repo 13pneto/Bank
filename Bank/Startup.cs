@@ -38,7 +38,7 @@ namespace Bank
 
             services.AddHttpContextAccessor();
 
-            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("BankConnection")));
 
             services.AddSession();
             services.AddDistributedMemoryCache();
