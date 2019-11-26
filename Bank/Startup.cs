@@ -34,8 +34,11 @@ namespace Bank
 
             //Add escopo da conexão \/
 
-            //services.AddScoped<>();
-
+            services.AddScoped<BoletoDAO>();
+            services.AddScoped<ContaDAO>();
+            services.AddScoped<ContaClienteDAO>();
+            services.AddScoped<PessoaDAO>();
+            services.AddScoped<MovimentacaoDAO>();
             services.AddHttpContextAccessor();
 
             services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("BankConnection")));

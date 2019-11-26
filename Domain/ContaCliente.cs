@@ -11,11 +11,19 @@ namespace Domain
     {
         [Key]
         public int IdContaCliente { get; set; }
+
+        [Display(Name = "Conta do cliente:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaDoCliente { get; set; }
+
+        [Display(Name = "Limite:")]
         public double Limite { get; set; }
+
+        public double Saldo { get; set; }
+
+
         public bool Status { get; set; }        //true = ativo | false = inativo
         public DateTime CriadoEm { get; set; }
-        public double Saldo { get; set; }
 
 
         public ContaCliente()

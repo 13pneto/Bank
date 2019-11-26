@@ -11,9 +11,19 @@ namespace Domain
     {
         [Key]
         public int IdBoleto { get; set; }
+
+        [Display(Name = "Conta de Origem:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaOrigem { get; set; }
+
+        [Display(Name = "Data vencimento:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public DateTime DtVencimento { get; set; }
+
+        [Display(Name = "Valor R$:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public double Valor { get; set; }
+
         public DateTime CriadoEm { get; set; }
         public bool Status { get; set; }              //True = Ativo | False = Inativo (vencido/cancelado)
 

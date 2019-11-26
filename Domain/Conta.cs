@@ -11,7 +11,11 @@ namespace Domain
     {
         [Key]
         public int IdConta { get; set; }
+        [Display(Name = "Nome:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public string Nome { get; set; }
+        [Display(Name = "Descrição:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public string Descricao { get; set; }
         //public double Limite { get; set; }
         public bool Status { get; set; }        //true = ativo | false = inativo

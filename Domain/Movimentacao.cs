@@ -11,10 +11,23 @@ namespace Domain
     {
         [Key]
         public int IdMovimento { get; set; }
+
+        [Display(Name = "Conta origem:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaOrigem { get; set; }
+
+        [Display(Name = "Conta destino:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaDestino { get; set; }
+
+        [Display(Name = "Valor:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public double Valor { get; set; }
+
+
         public DateTime DtMovimentacao { get; set; }
+
+
         public bool Status { get; set; }            //True = ativo | False = inativo
 
         public Movimentacao()
