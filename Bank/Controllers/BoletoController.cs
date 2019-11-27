@@ -10,22 +10,22 @@ using Repository;
 
 namespace Bank.Controllers
 {
-    public class ContaController : Controller
+    public class BoletoController : Controller
     {
         private readonly Context _context;
 
-        public ContaController(Context context)
+        public BoletoController(Context context)
         {
             _context = context;
         }
 
-        // GET: Conta
+        // GET: Boleto
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Contas.ToListAsync());
+            return View(await _context.Boletos.ToListAsync());
         }
 
-        // GET: Conta/Details/5
+        // GET: Boleto/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,37 +33,37 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas
-                .FirstOrDefaultAsync(m => m.IdConta == id);
-            if (conta == null)
+            var boleto = await _context.Boletos
+                .FirstOrDefaultAsync(m => m.IdBoleto == id);
+            if (boleto == null)
             {
                 return NotFound();
             }
 
-            return View(conta);
+            return View(boleto);
         }
 
-        // GET: Conta/Create
+        // GET: Boleto/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Conta/Create
+        // POST: Boleto/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdConta,Nome,Descricao,Status,CriadoEm")] Conta conta)
+        public async Task<IActionResult> Create([Bind("IdBoleto,DtVencimento,Valor,CriadoEm,Status")] Boleto boleto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(conta);
+                _context.Add(boleto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(conta);
+            return View(boleto);
         }
 
-        // GET: Conta/Edit/5
+        // GET: Boleto/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -71,20 +71,20 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas.FindAsync(id);
-            if (conta == null)
+            var boleto = await _context.Boletos.FindAsync(id);
+            if (boleto == null)
             {
                 return NotFound();
             }
-            return View(conta);
+            return View(boleto);
         }
 
-        // POST: Conta/Edit/5
+        // POST: Boleto/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdConta,Nome,Descricao,Status,CriadoEm")] Conta conta)
+        public async Task<IActionResult> Edit(int id, [Bind("IdBoleto,DtVencimento,Valor,CriadoEm,Status")] Boleto boleto)
         {
-            if (id != conta.IdConta)
+            if (id != boleto.IdBoleto)
             {
                 return NotFound();
             }
@@ -93,12 +93,12 @@ namespace Bank.Controllers
             {
                 try
                 {
-                    _context.Update(conta);
+                    _context.Update(boleto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ContaExists(conta.IdConta))
+                    if (!BoletoExists(boleto.IdBoleto))
                     {
                         return NotFound();
                     }
@@ -109,10 +109,10 @@ namespace Bank.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(conta);
+            return View(boleto);
         }
 
-        // GET: Conta/Delete/5
+        // GET: Boleto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -120,30 +120,30 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas
-                .FirstOrDefaultAsync(m => m.IdConta == id);
-            if (conta == null)
+            var boleto = await _context.Boletos
+                .FirstOrDefaultAsync(m => m.IdBoleto == id);
+            if (boleto == null)
             {
                 return NotFound();
             }
 
-            return View(conta);
+            return View(boleto);
         }
 
-        // POST: Conta/Delete/5
+        // POST: Boleto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var conta = await _context.Contas.FindAsync(id);
-            _context.Contas.Remove(conta);
+            var boleto = await _context.Boletos.FindAsync(id);
+            _context.Boletos.Remove(boleto);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContaExists(int id)
+        private bool BoletoExists(int id)
         {
-            return _context.Contas.Any(e => e.IdConta == id);
+            return _context.Boletos.Any(e => e.IdBoleto == id);
         }
     }
 }

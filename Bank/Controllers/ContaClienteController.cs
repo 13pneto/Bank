@@ -10,22 +10,22 @@ using Repository;
 
 namespace Bank.Controllers
 {
-    public class ContaController : Controller
+    public class ContaClienteController : Controller
     {
         private readonly Context _context;
 
-        public ContaController(Context context)
+        public ContaClienteController(Context context)
         {
             _context = context;
         }
 
-        // GET: Conta
+        // GET: ContaCliente
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Contas.ToListAsync());
+            return View(await _context.ContaClientes.ToListAsync());
         }
 
-        // GET: Conta/Details/5
+        // GET: ContaCliente/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,37 +33,37 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas
-                .FirstOrDefaultAsync(m => m.IdConta == id);
-            if (conta == null)
+            var contaCliente = await _context.ContaClientes
+                .FirstOrDefaultAsync(m => m.IdContaCliente == id);
+            if (contaCliente == null)
             {
                 return NotFound();
             }
 
-            return View(conta);
+            return View(contaCliente);
         }
 
-        // GET: Conta/Create
+        // GET: ContaCliente/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Conta/Create
+        // POST: ContaCliente/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdConta,Nome,Descricao,Status,CriadoEm")] Conta conta)
+        public async Task<IActionResult> Create([Bind("IdContaCliente,Limite,Saldo,Status,CriadoEm")] ContaCliente contaCliente)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(conta);
+                _context.Add(contaCliente);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(conta);
+            return View(contaCliente);
         }
 
-        // GET: Conta/Edit/5
+        // GET: ContaCliente/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -71,20 +71,20 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas.FindAsync(id);
-            if (conta == null)
+            var contaCliente = await _context.ContaClientes.FindAsync(id);
+            if (contaCliente == null)
             {
                 return NotFound();
             }
-            return View(conta);
+            return View(contaCliente);
         }
 
-        // POST: Conta/Edit/5
+        // POST: ContaCliente/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdConta,Nome,Descricao,Status,CriadoEm")] Conta conta)
+        public async Task<IActionResult> Edit(int id, [Bind("IdContaCliente,Limite,Saldo,Status,CriadoEm")] ContaCliente contaCliente)
         {
-            if (id != conta.IdConta)
+            if (id != contaCliente.IdContaCliente)
             {
                 return NotFound();
             }
@@ -93,12 +93,12 @@ namespace Bank.Controllers
             {
                 try
                 {
-                    _context.Update(conta);
+                    _context.Update(contaCliente);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ContaExists(conta.IdConta))
+                    if (!ContaClienteExists(contaCliente.IdContaCliente))
                     {
                         return NotFound();
                     }
@@ -109,10 +109,10 @@ namespace Bank.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(conta);
+            return View(contaCliente);
         }
 
-        // GET: Conta/Delete/5
+        // GET: ContaCliente/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -120,30 +120,30 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas
-                .FirstOrDefaultAsync(m => m.IdConta == id);
-            if (conta == null)
+            var contaCliente = await _context.ContaClientes
+                .FirstOrDefaultAsync(m => m.IdContaCliente == id);
+            if (contaCliente == null)
             {
                 return NotFound();
             }
 
-            return View(conta);
+            return View(contaCliente);
         }
 
-        // POST: Conta/Delete/5
+        // POST: ContaCliente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var conta = await _context.Contas.FindAsync(id);
-            _context.Contas.Remove(conta);
+            var contaCliente = await _context.ContaClientes.FindAsync(id);
+            _context.ContaClientes.Remove(contaCliente);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContaExists(int id)
+        private bool ContaClienteExists(int id)
         {
-            return _context.Contas.Any(e => e.IdConta == id);
+            return _context.ContaClientes.Any(e => e.IdContaCliente == id);
         }
     }
 }

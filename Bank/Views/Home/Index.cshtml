@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Bem vindo!</h2>
+
+<form method="POST" action="index.php">
+    <div class="form-group">
+        <label for="email">Login</label>
+        <input type="text" name="login" class="form-control" placeholder="Digite seu login">
+    </div>
+    <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="text" name="senha" class="form-control" placeholder="Digite sua senha">
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Lembre-me</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+    <br />
+    <a href="cadastrarcliente.php" style="font-size: 13px;font-style: oblique;">Não tem login? Clique aqui!</a>
+</form>
