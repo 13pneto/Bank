@@ -50,6 +50,8 @@ namespace Bank.Controllers
         }
 
         // POST: Pessoa/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
@@ -80,6 +82,8 @@ namespace Bank.Controllers
         }
 
         // POST: Pessoa/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)

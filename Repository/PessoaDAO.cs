@@ -8,10 +8,12 @@ namespace Repository
     public class PessoaDAO : InterfaceDAO<Pessoa>
     {
         private readonly Context _context;
+        private readonly PessoaDAO _pessoaDAO;
 
-        public PessoaDAO(Context context)
+        public PessoaDAO(Context context, PessoaDAO pessoaDAO)
         {
             _context = context;
+            _pessoaDAO = pessoaDAO;
         }
 
 
