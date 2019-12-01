@@ -13,10 +13,12 @@ namespace Bank.Controllers
     public class PessoaController : Controller
     {
         private readonly Context _context;
+        private readonly PessoaDAO _pessoaDAO;
 
-        public PessoaController(Context context)
+        public PessoaController(Context context, PessoaDAO pessoaDAO)
         {
             _context = context;
+            _pessoaDAO = pessoaDAO;
         }
 
         // GET: Pessoa
@@ -58,9 +60,10 @@ namespace Bank.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pessoa);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (_pessoaDAO.Cadastrar(pessoa) == true)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(pessoa);
         }
