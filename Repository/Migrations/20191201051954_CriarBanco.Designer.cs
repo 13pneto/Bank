@@ -10,7 +10,7 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191126002548_CriarBanco")]
+    [Migration("20191201051954_CriarBanco")]
     partial class CriarBanco
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,7 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ContaOrigemIdConta");
+                    b.Property<int>("ContaOrigemIdConta");
 
                     b.Property<DateTime>("CriadoEm");
 
@@ -52,9 +52,11 @@ namespace Repository.Migrations
 
                     b.Property<DateTime>("CriadoEm");
 
-                    b.Property<string>("Descricao");
+                    b.Property<string>("Descricao")
+                        .IsRequired();
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.Property<bool>("Status");
 
@@ -69,7 +71,7 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ContaDoClienteIdConta");
+                    b.Property<int>("ContaDoClienteIdConta");
 
                     b.Property<DateTime>("CriadoEm");
 
@@ -92,13 +94,12 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ContaDestinoIdConta");
-
-                    b.Property<int?>("ContaOrigemIdConta");
+                    b.Property<int>("ContaOrigemIdConta");
 
                     b.Property<DateTime>("DtMovimentacao");
 
-                    b.Property<string>("PessoaNome");
+                    b.Property<int?>("FK_ContaDestino")
+                        .IsRequired();
 
                     b.Property<bool>("Status");
 
@@ -106,23 +107,27 @@ namespace Repository.Migrations
 
                     b.HasKey("IdMovimento");
 
-                    b.HasIndex("ContaDestinoIdConta");
-
                     b.HasIndex("ContaOrigemIdConta");
 
-                    b.HasIndex("PessoaNome");
+                    b.HasIndex("FK_ContaDestino");
 
                     b.ToTable("TB_Movimentacao");
                 });
 
             modelBuilder.Entity("Domain.Pessoa", b =>
                 {
-                    b.Property<string>("Nome")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("IdCliente")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Cpf");
+                    b.Property<string>("Cpf")
+                        .IsRequired()
+                        .HasMaxLength(11);
 
                     b.Property<DateTime>("CriadoEm");
+
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.Property<bool>("Status");
 
@@ -130,7 +135,7 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasConversion(new ValueConverter<string, string>(v => default(string), v => default(string), new ConverterMappingHints(size: 1)));
 
-                    b.HasKey("Nome");
+                    b.HasKey("IdCliente");
 
                     b.ToTable("TB_Pessoa");
                 });
@@ -139,29 +144,29 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Domain.Conta", "ContaOrigem")
                         .WithMany()
-                        .HasForeignKey("ContaOrigemIdConta");
+                        .HasForeignKey("ContaOrigemIdConta")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.ContaCliente", b =>
                 {
                     b.HasOne("Domain.Conta", "ContaDoCliente")
                         .WithMany()
-                        .HasForeignKey("ContaDoClienteIdConta");
+                        .HasForeignKey("ContaDoClienteIdConta")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.Movimentacao", b =>
                 {
-                    b.HasOne("Domain.Conta", "ContaDestino")
-                        .WithMany()
-                        .HasForeignKey("ContaDestinoIdConta");
-
                     b.HasOne("Domain.Conta", "ContaOrigem")
                         .WithMany()
-                        .HasForeignKey("ContaOrigemIdConta");
+                        .HasForeignKey("ContaOrigemIdConta")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Pessoa")
-                        .WithMany("Movimentacoes")
-                        .HasForeignKey("PessoaNome");
+                    b.HasOne("Domain.Conta", "ContaDestino")
+                        .WithMany()
+                        .HasForeignKey("FK_ContaDestino")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
