@@ -9,6 +9,11 @@ namespace Domain
     [Table("TB_Pessoa")]
     public class Pessoa
     {
+        public Pessoa()
+        {
+            CriadoEm = DateTime.Now;
+        }
+
         [Key]
         public int IdCliente { get; set; }
 

@@ -9,16 +9,12 @@ namespace Repository
     public class PessoaDAO : InterfaceDAO<Pessoa>
     {
         private readonly Context _context;
-        private readonly PessoaDAO _pessoaDAO;
 
-        public PessoaDAO(Context context, PessoaDAO pessoaDAO)
+        public PessoaDAO(Context context)
         {
             _context = context;
-            _pessoaDAO = pessoaDAO;
         }
-
-
-
+               
         public Pessoa BuscarPorId(int id)
         {
             return _context.Pessoas.FirstOrDefault
@@ -53,5 +49,13 @@ namespace Repository
             }
             return false;                  //Retorna false caso nao encontre
         }
+
+        public Pessoa BuscarPessoaPorCpf(string Cpf)
+        {
+            Pessoa pessoa = _context.Pessoas.FirstOrDefault(x => x.Cpf.Equals(Cpf));
+
+            return pessoa;
+        }
+
     }
 }
