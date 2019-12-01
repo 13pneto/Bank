@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace Repository
 {
@@ -17,24 +18,40 @@ namespace Repository
         }
 
 
+
         public Pessoa BuscarPorId(int id)
         {
-            throw new NotImplementedException();
+            return _context.Pessoas.FirstOrDefault
+             (x => x.IdCliente.Equals(id));
         }
 
-        public bool Cadastrar(Pessoa t)
+        public bool Cadastrar(Pessoa p)
         {
-            throw new NotImplementedException();
+            if (BuscarPorId(p.IdCliente) == null)
+            {
+                _context.Pessoas.Add(p);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public List<Pessoa> ListarTodos()
         {
-            throw new NotImplementedException();
+            return _context.Pessoas.ToList();
         }
 
         public bool RemoverPorId(int id)
         {
-            throw new NotImplementedException();
+            Pessoa p = BuscarPorId(id);
+
+            if (p != null)   //Verifica se existe este id no cadastro
+            {
+                _context.Pessoas.Remove(p);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;                  //Retorna false caso nao encontre
         }
     }
 }

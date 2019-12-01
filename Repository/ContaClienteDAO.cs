@@ -1,6 +1,7 @@
 ﻿using Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Repository
@@ -14,24 +15,40 @@ namespace Repository
             _context = context;
         }
 
+
         public ContaCliente BuscarPorId(int id)
         {
-            throw new NotImplementedException();
+            return _context.ContaClientes.FirstOrDefault
+            (x => x.IdContaCliente.Equals(id));
         }
 
-        public bool Cadastrar(ContaCliente t)
+        public bool Cadastrar(ContaCliente c)
         {
-            throw new NotImplementedException();
+            if (BuscarPorId(c.IdContaCliente) == null)
+            {
+                _context.ContaClientes.Add(c);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
 
         public List<ContaCliente> ListarTodos()
         {
-            throw new NotImplementedException();
+            return _context.ContaClientes.ToList();
         }
 
         public bool RemoverPorId(int id)
         {
-            throw new NotImplementedException();
+            ContaCliente c = BuscarPorId(id);
+
+            if (c != null)   //Verifica se existe este id no cadastro
+            {
+                _context.ContaClientes.Remove(c);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;                  //Retorna false caso nao encontre
         }
     }
 }
