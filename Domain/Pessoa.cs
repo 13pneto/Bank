@@ -33,6 +33,6 @@ namespace Domain
 
         public DateTime CriadoEm { get; set; }
         public char Tipo { get; set; }        //C - Cliente | F - Funcionario | A- Adm
-        public List<Movimentacao> Movimentacoes{ get; set; }
+        //public List<Movimentacao> Movimentacoes{ get; set; }
     }
 }

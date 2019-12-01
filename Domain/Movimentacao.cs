@@ -7,6 +7,7 @@ using System.Text;
 namespace Domain
 {
     [Table("TB_Movimentacao")]
+    
     public class Movimentacao
     {
         [Key]
@@ -18,15 +19,14 @@ namespace Domain
 
         [Display(Name = "Conta destino:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
+        [ForeignKey("FK_ContaDestino")]
         public Conta ContaDestino { get; set; }
 
         [Display(Name = "Valor:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
         public double Valor { get; set; }
 
-
         public DateTime DtMovimentacao { get; set; }
-
 
         public bool Status { get; set; }            //True = ativo | False = inativo
 

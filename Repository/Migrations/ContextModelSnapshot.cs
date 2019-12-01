@@ -92,13 +92,12 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ContaDestinoIdConta");
-
                     b.Property<int>("ContaOrigemIdConta");
 
                     b.Property<DateTime>("DtMovimentacao");
 
-                    b.Property<int?>("PessoaIdCliente");
+                    b.Property<int?>("FK_ContaDestino")
+                        .IsRequired();
 
                     b.Property<bool>("Status");
 
@@ -106,11 +105,9 @@ namespace Repository.Migrations
 
                     b.HasKey("IdMovimento");
 
-                    b.HasIndex("ContaDestinoIdConta");
-
                     b.HasIndex("ContaOrigemIdConta");
 
-                    b.HasIndex("PessoaIdCliente");
+                    b.HasIndex("FK_ContaDestino");
 
                     b.ToTable("TB_Movimentacao");
                 });
@@ -159,19 +156,15 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Domain.Movimentacao", b =>
                 {
-                    b.HasOne("Domain.Conta", "ContaDestino")
-                        .WithMany()
-                        .HasForeignKey("ContaDestinoIdConta")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Domain.Conta", "ContaOrigem")
                         .WithMany()
                         .HasForeignKey("ContaOrigemIdConta")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Pessoa")
-                        .WithMany("Movimentacoes")
-                        .HasForeignKey("PessoaIdCliente");
+                    b.HasOne("Domain.Conta", "ContaDestino")
+                        .WithMany()
+                        .HasForeignKey("FK_ContaDestino")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
