@@ -86,6 +86,11 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Conta conta)
         {
+            if (conta.IdConta != conta.IdConta)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
