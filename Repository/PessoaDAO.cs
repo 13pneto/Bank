@@ -22,8 +22,7 @@ namespace Repository
 
         public bool BuscarPorCpf(string cpf, char tipo)
         {
-
-            Pessoa p = _context.Pessoas.FirstOrDefault(x => x.Cpf.Equals(cpf));
+            Pessoa p = _context.Pessoas.FirstOrDefault(x => x.Cpf.Equals(cpf) && x.Tipo.Equals(tipo));
             if (p == null)
             {
                 return false;

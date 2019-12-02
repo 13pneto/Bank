@@ -58,18 +58,22 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
         {
-            if (ModelState.IsValid)
+
+            if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo))
             {
-                
+                string tipo = "";
+                tipo = pessoa.Tipo == 'C' ? "Cliente" : "Funcionario";
+                ModelState.AddModelError("", string.Format("Cpf já cadastrado para este {0}", tipo));
+            }
+            else
+            {
 
-                if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo) == false)
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("","Este CPF já está cadastrado");
+                    _context.Add(pessoa);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                _context.Add(pessoa);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-
             }
             return View(pessoa);
         }
