@@ -122,26 +122,18 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var conta = await _context.Contas
-                .FirstOrDefaultAsync(m => m.IdConta == id);
+            var conta = await _context.Contas.FirstOrDefaultAsync(m => m.IdConta == id);
+
             if (conta == null)
             {
                 return NotFound();
             }
 
-            return View(conta);
-        }
-
-        // POST: Conta/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var conta = await _context.Contas.FindAsync(id);
             _context.Contas.Remove(conta);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool ContaExists(int id)
         {
