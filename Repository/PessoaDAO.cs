@@ -14,16 +14,33 @@ namespace Repository
         {
             _context = context;
         }
-               
+
         public Pessoa BuscarPorId(int id)
         {
             return _context.Pessoas.FirstOrDefault
              (x => x.IdCliente.Equals(id));
         }
 
+        public bool BuscarPorCpf(string cpf, char tipo)
+        {
+
+            Pessoa p = _context.Pessoas.FirstOrDefault(x => x.Cpf.Equals(cpf));
+            if (p == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public Pessoa BuscarPorCpf(string cpf)
+        {
+            return _context.Pessoas.FirstOrDefault
+            (x => x.Cpf.Equals(cpf));
+        }
+
         public bool Cadastrar(Pessoa p)
         {
-            if (BuscarPorId(p.IdCliente) == null)
+            if (BuscarPorCpf(p.Cpf, p.Tipo) == true)
             {
                 _context.Pessoas.Add(p);
                 _context.SaveChanges();
@@ -31,6 +48,7 @@ namespace Repository
             }
             return false;
         }
+
 
         public List<Pessoa> ListarTodos()
         {
@@ -49,13 +67,5 @@ namespace Repository
             }
             return false;                  //Retorna false caso nao encontre
         }
-
-        public Pessoa BuscarPessoaPorCpf(string Cpf)
-        {
-            Pessoa pessoa = _context.Pessoas.FirstOrDefault(x => x.Cpf.Equals(Cpf));
-
-            return pessoa;
-        }
-
     }
 }

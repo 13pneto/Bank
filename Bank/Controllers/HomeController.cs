@@ -26,9 +26,9 @@ namespace Bank.Controllers
         [HttpPost]
         public IActionResult Login(string Cpf)
         {
-            if (_pessoaDAO.BuscarPessoaPorCpf(Cpf) != null)
+            if (_pessoaDAO.BuscarPorCpf(Cpf) != null)
             {
-                Pessoa cpfLogin = _pessoaDAO.BuscarPessoaPorCpf(Cpf);
+                Pessoa cpfLogin = _pessoaDAO.BuscarPorCpf(Cpf);
                 return View(cpfLogin);
             }
             ModelState.AddModelError("", "CPF não cadastrado!");

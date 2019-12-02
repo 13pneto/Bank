@@ -26,7 +26,7 @@ namespace Domain
         [MaxLength(11, ErrorMessage = "Maximo 11 caracteres!")]
         public string Cpf { get; set; }
 
-        [Display(Name = "Conta do cliente:")]
+        [Display(Name = "Status")]
         [Required(ErrorMessage = "Campo obrigatório!")]
         public bool Status { get; set; }
 
