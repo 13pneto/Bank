@@ -35,8 +35,7 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var pessoa = await _context.Pessoas
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
+            var pessoa = await _context.Pessoas.FirstOrDefaultAsync(m => m.IdCliente == id);
             if (pessoa == null)
             {
                 return NotFound();
@@ -56,7 +55,7 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
+        public async Task<IActionResult> Create(Pessoa pessoa)
         {
 
             if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo))
@@ -99,13 +98,8 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
+        public async Task<IActionResult> Edit(Pessoa pessoa)
         {
-            if (id != pessoa.IdCliente)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -144,19 +138,12 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            return View(pessoa);
-        }
-
-        // POST: Pessoa/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var pessoa = await _context.Pessoas.FindAsync(id);
             _context.Pessoas.Remove(pessoa);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool PessoaExists(int id)
         {
