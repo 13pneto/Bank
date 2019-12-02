@@ -17,8 +17,7 @@ namespace Repository
 
         public Pessoa BuscarPorId(int id)
         {
-            return _context.Pessoas.FirstOrDefault
-             (x => x.IdCliente.Equals(id));
+            return _context.Pessoas.FirstOrDefault(x => x.IdCliente.Equals(id));
         }
 
         public bool BuscarPorCpf(string cpf, char tipo)
