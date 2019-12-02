@@ -86,12 +86,8 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdMovimento,Valor,DtMovimentacao,Status")] Movimentacao movimentacao)
+        public async Task<IActionResult> Edit(Movimentacao movimentacao)
         {
-            if (id != movimentacao.IdMovimento)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -137,9 +133,9 @@ namespace Bank.Controllers
         // POST: Movimentacao/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int IdMovimentacao)
         {
-            var movimentacao = await _context.Movimentacoes.FindAsync(id);
+            var movimentacao = await _context.Movimentacoes.FindAsync(IdMovimentacao);
             _context.Movimentacoes.Remove(movimentacao);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

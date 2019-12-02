@@ -86,12 +86,8 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdContaCliente,Limite,Saldo,Status,CriadoEm")] ContaCliente contaCliente)
-        {
-            if (id != contaCliente.IdContaCliente)
-            {
-                return NotFound();
-            }
+        public async Task<IActionResult> Edit(ContaCliente contaCliente)
+        { 
 
             if (ModelState.IsValid)
             {
