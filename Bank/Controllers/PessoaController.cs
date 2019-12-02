@@ -35,8 +35,8 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var pessoa = await _context.Pessoas
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
+            var pessoa = await _context.Pessoas.FirstOrDefaultAsync(m => m.IdCliente == id);
+
             if (pessoa == null)
             {
                 return NotFound();
@@ -60,11 +60,9 @@ namespace Bank.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-
                 if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo) == false)
                 {
-                    ModelState.AddModelError("","Este CPF já está cadastrado");
+                    ModelState.AddModelError("", "Este CPF já está cadastrado");
                 }
                 _context.Add(pessoa);
                 await _context.SaveChangesAsync();
