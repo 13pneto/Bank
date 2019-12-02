@@ -10,24 +10,22 @@ using Repository;
 
 namespace Bank.Controllers
 {
-    public class PessoaController : Controller
+    public class ContasController : Controller
     {
         private readonly Context _context;
-        private readonly PessoaDAO _pessoaDAO;
 
-        public PessoaController(Context context, PessoaDAO pessoaDAO)
+        public ContasController(Context context)
         {
             _context = context;
-            _pessoaDAO = pessoaDAO;
         }
 
-        // GET: Pessoa
+        // GET: Contas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Pessoas.ToListAsync());
+            return View(await _context.Contas.ToListAsync());
         }
 
-        // GET: Pessoa/Details/5
+        // GET: Contas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,50 +33,39 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var pessoa = await _context.Pessoas
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
-            if (pessoa == null)
+            var conta = await _context.Contas
+                .FirstOrDefaultAsync(m => m.IdConta == id);
+            if (conta == null)
             {
                 return NotFound();
             }
 
-            return View(pessoa);
+            return View(conta);
         }
 
-        // GET: Pessoa/Create
+        // GET: Contas/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Pessoa/Create
+        // POST: Contas/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
+        public async Task<IActionResult> Create([Bind("IdConta,Nome,Descricao,Status,CriadoEm")] Conta conta)
         {
-
-            if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo))
+            if (ModelState.IsValid)
             {
-                string tipo = "";
-                tipo = pessoa.Tipo == 'C' ? "Cliente" : "Funcionario";
-                ModelState.AddModelError("", string.Format("Cpf já cadastrado para este {0}", tipo));
+                _context.Add(conta);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            else
-            {
-
-                if (ModelState.IsValid)
-                {
-                    _context.Add(pessoa);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            return View(pessoa);
+            return View(conta);
         }
 
-        // GET: Pessoa/Edit/5
+        // GET: Contas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -86,36 +73,31 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var pessoa = await _context.Pessoas.FindAsync(id);
-            if (pessoa == null)
+            var conta = await _context.Contas.FindAsync(id);
+            if (conta == null)
             {
                 return NotFound();
             }
-            return View(pessoa);
+            return View(conta);
         }
 
-        // POST: Pessoa/Edit/5
+        // POST: Contas/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
+        public async Task<IActionResult> Edit(Conta conta)
         {
-            if (id != pessoa.IdCliente)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(pessoa);
+                    _context.Update(conta);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PessoaExists(pessoa.IdCliente))
+                    if (!ContaExists(conta.IdConta))
                     {
                         return NotFound();
                     }
@@ -126,10 +108,10 @@ namespace Bank.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(pessoa);
+            return View(conta);
         }
 
-        // GET: Pessoa/Delete/5
+        // GET: Contas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,30 +119,30 @@ namespace Bank.Controllers
                 return NotFound();
             }
 
-            var pessoa = await _context.Pessoas
-                .FirstOrDefaultAsync(m => m.IdCliente == id);
-            if (pessoa == null)
+            var conta = await _context.Contas
+                .FirstOrDefaultAsync(m => m.IdConta == id);
+            if (conta == null)
             {
                 return NotFound();
             }
 
-            return View(pessoa);
+            return View(conta);
         }
 
-        // POST: Pessoa/Delete/5
+        // POST: Contas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int IdCliente)
+        public async Task<IActionResult> DeleteConfirmed(int IdConta)
         {
-            var pessoa = await _context.Pessoas.FindAsync(IdCliente);
-            _context.Pessoas.Remove(pessoa);
+            var conta = await _context.Contas.FindAsync(IdConta);
+            _context.Contas.Remove(conta);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PessoaExists(int id)
+        private bool ContaExists(int id)
         {
-            return _context.Pessoas.Any(e => e.IdCliente == id);
+            return _context.Contas.Any(e => e.IdConta == id);
         }
     }
 }
