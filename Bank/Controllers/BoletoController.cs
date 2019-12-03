@@ -7,16 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Repository;
+using Newtonsoft.Json;
 
 namespace Bank.Controllers
 {
     public class BoletoController : Controller
     {
         private readonly Context _context;
-
-        public BoletoController(Context context)
+        private readonly ContaClienteDAO _contaClienteDAO;
+        public BoletoController(Context context, ContaClienteDAO contaClienteDAO)
         {
             _context = context;
+            _contaClienteDAO = contaClienteDAO;
         }
 
         // GET: Boleto
@@ -44,20 +46,55 @@ namespace Bank.Controllers
         }
 
         // GET: Boleto/Create
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
+
+
+        //POST: BUSCAR CONTA
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuscarConta(Boleto b)
+        {
+            b.ContaOrigem = _contaClienteDAO.BuscarPorId(b.ContaOrigem.IdContaCliente);
+
+            if (b.ContaOrigem == null)
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+
+            TempData["ContaOrigem"] = JsonConvert.SerializeObject(b.ContaOrigem);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Create));
+        }
+
         public IActionResult Create()
         {
+            Boleto b;
+           
+            if (TempData["ContaOrigem"] != null)
+            {
+                b = new Boleto();
+                b.DtVencimento = DateTime.Now.AddDays(1);
+                b.ContaOrigem = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaOrigem"].ToString());
+                return View(b);
+            }
             return View();
         }
+
 
         // POST: Boleto/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdBoleto,DtVencimento,Valor,CriadoEm,Status")] Boleto boleto)
+        public async Task<IActionResult> Create(Boleto boleto)
         {
             if (ModelState.IsValid)
             {
+
                 _context.Add(boleto);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

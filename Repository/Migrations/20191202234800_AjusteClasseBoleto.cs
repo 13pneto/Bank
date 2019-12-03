@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class CriarBanco : Migration
+    public partial class AjusteClasseBoleto : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,29 +39,6 @@ namespace Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_Pessoa", x => x.IdCliente);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TB_Boleto",
-                columns: table => new
-                {
-                    IdBoleto = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ContaOrigemIdConta = table.Column<int>(nullable: false),
-                    DtVencimento = table.Column<DateTime>(nullable: false),
-                    Valor = table.Column<double>(nullable: false),
-                    CriadoEm = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TB_Boleto", x => x.IdBoleto);
-                    table.ForeignKey(
-                        name: "FK_TB_Boleto_TB_Conta_ContaOrigemIdConta",
-                        column: x => x.ContaOrigemIdConta,
-                        principalTable: "TB_Conta",
-                        principalColumn: "IdConta",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -116,10 +93,33 @@ namespace Repository.Migrations
                         onDelete: ReferentialAction.NoAction);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TB_Boleto",
+                columns: table => new
+                {
+                    IdBoleto = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ContaOrigemIdContaCliente = table.Column<int>(nullable: false),
+                    DtVencimento = table.Column<DateTime>(nullable: false),
+                    Valor = table.Column<double>(nullable: false),
+                    CriadoEm = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_Boleto", x => x.IdBoleto);
+                    table.ForeignKey(
+                        name: "FK_TB_Boleto_TB_ContaCliente_ContaOrigemIdContaCliente",
+                        column: x => x.ContaOrigemIdContaCliente,
+                        principalTable: "TB_ContaCliente",
+                        principalColumn: "IdContaCliente",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_TB_Boleto_ContaOrigemIdConta",
+                name: "IX_TB_Boleto_ContaOrigemIdContaCliente",
                 table: "TB_Boleto",
-                column: "ContaOrigemIdConta");
+                column: "ContaOrigemIdContaCliente");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TB_ContaCliente_ContaDoClienteIdConta",
@@ -143,13 +143,13 @@ namespace Repository.Migrations
                 name: "TB_Boleto");
 
             migrationBuilder.DropTable(
-                name: "TB_ContaCliente");
-
-            migrationBuilder.DropTable(
                 name: "TB_Movimentacao");
 
             migrationBuilder.DropTable(
                 name: "TB_Pessoa");
+
+            migrationBuilder.DropTable(
+                name: "TB_ContaCliente");
 
             migrationBuilder.DropTable(
                 name: "TB_Conta");

@@ -16,6 +16,8 @@ namespace Domain
         [Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaDoCliente { get; set; }
 
+        public Pessoa Pessoa{ get; set; }
+
         [Display(Name = "Limite:")]
         public double Limite { get; set; }
 

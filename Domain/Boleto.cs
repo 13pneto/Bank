@@ -14,7 +14,7 @@ namespace Domain
 
         [Display(Name = "Conta de Origem:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
-        public Conta ContaOrigem { get; set; }
+        public ContaCliente ContaOrigem { get; set; }
 
         [Display(Name = "Data vencimento:")]
         [Required(ErrorMessage = "Campo obrigatório!")]

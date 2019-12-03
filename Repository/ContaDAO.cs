@@ -21,6 +21,7 @@ namespace Repository
             (x => x.IdConta.Equals(id));
         }
 
+
         public bool Cadastrar(Conta c)
         {
             if (BuscarPorId(c.IdConta) == null)

@@ -9,15 +9,23 @@
 <h4>Boleto</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="ContaOrigem" class="control-label"></label>
-                <input asp-for="ContaOrigem" class="form-control" />
-                <span asp-validation-for="ContaOrigem" class="text-danger"></span>
+                <label asp-for="ContaOrigem.IdContaCliente" class="control-label"></label>
+                <input asp-for="ContaOrigem.IdContaCliente" class="form-control" />
+                <span asp-validation-for="ContaOrigem.ContaDoCliente.IdConta" class="text-danger"></span>
+                <input type="submit" asp-action="BuscarConta" value="Buscar" class="btn btn-warning" />
             </div>
+
+            @*<form asp-action="BuscarConta">*@
+            @*BOTÃO BUSCAR CONTA DESTINO*@
+            @*<input type="hidden" asp-for="ContaOrigem.IdConta" />*@
+            @*<input type="submit" asp-action="BuscarConta" value="Buscar" class="btn btn-warning" />*@
+            @*</form>*@
+
 
             <div class="form-group">
                 <label asp-for="DtVencimento" class="control-label"></label>
@@ -34,7 +42,39 @@
             </div>
         </form>
     </div>
+    <div class="col-md-6">
+
+
+        @*-------------------------------Conta encontrada--------------------------------*@ 
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="IdConta">IdConta</label>
+                <div class="col-md-12">
+                    <input id="IdConta" asp-for="ContaOrigem.IdContaCliente" name="IdConta" type="text" disabled placeholder="IdConta" class="form-control input-md">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Nome">Nome do titular da conta</label>
+                <div class="col-md-12">
+                    <input id="Nome" asp-for="ContaOrigem.Pessoa.Nome" name="Nome" type="text" disabled placeholder="Nome do titular da conta" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Cpf">CPF</label>
+                <div class="col-md-12">
+                    <input id="Cpf" asp-for="ContaOrigem.Pessoa.Cpf" name="Cpf" type="number" disabled placeholder="CPF" class="form-control input-md">
+                </div>
+            </div>
+        </form>
+
+
+    </div>
 </div>
+
+
 
 <div>
     <a asp-action="Index">Back to List</a>

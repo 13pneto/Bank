@@ -10,8 +10,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191202170631_Teste")]
-    partial class Teste
+    [Migration("20191203000517_AjusteClasseContaCliente")]
+    partial class AjusteClasseContaCliente
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,7 +27,7 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ContaOrigemIdConta");
+                    b.Property<int>("ContaOrigemIdContaCliente");
 
                     b.Property<DateTime>("CriadoEm");
 
@@ -39,7 +39,7 @@ namespace Repository.Migrations
 
                     b.HasKey("IdBoleto");
 
-                    b.HasIndex("ContaOrigemIdConta");
+                    b.HasIndex("ContaOrigemIdContaCliente");
 
                     b.ToTable("TB_Boleto");
                 });
@@ -77,6 +77,8 @@ namespace Repository.Migrations
 
                     b.Property<double>("Limite");
 
+                    b.Property<int?>("PessoaIdCliente");
+
                     b.Property<double>("Saldo");
 
                     b.Property<bool>("Status");
@@ -84,6 +86,8 @@ namespace Repository.Migrations
                     b.HasKey("IdContaCliente");
 
                     b.HasIndex("ContaDoClienteIdConta");
+
+                    b.HasIndex("PessoaIdCliente");
 
                     b.ToTable("TB_ContaCliente");
                 });
@@ -142,9 +146,9 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Domain.Boleto", b =>
                 {
-                    b.HasOne("Domain.Conta", "ContaOrigem")
+                    b.HasOne("Domain.ContaCliente", "ContaOrigem")
                         .WithMany()
-                        .HasForeignKey("ContaOrigemIdConta")
+                        .HasForeignKey("ContaOrigemIdContaCliente")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -154,6 +158,10 @@ namespace Repository.Migrations
                         .WithMany()
                         .HasForeignKey("ContaDoClienteIdConta")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Domain.Pessoa", "Pessoa")
+                        .WithMany()
+                        .HasForeignKey("PessoaIdCliente");
                 });
 
             modelBuilder.Entity("Domain.Movimentacao", b =>

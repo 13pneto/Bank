@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,8 @@ namespace Repository
 
         public ContaCliente BuscarPorId(int id)
         {
-            return _context.ContaClientes.FirstOrDefault
-            (x => x.IdContaCliente.Equals(id));
+            //return _context.ContaClientes.FirstOrDefault(x => x.IdContaCliente.Equals(id));
+            return _context.ContaClientes.Include(x => x.Pessoa).Include(z => z.ContaDoCliente).FirstOrDefault(y => y.IdContaCliente.Equals(id));
         }
 
         public bool Cadastrar(ContaCliente c)
