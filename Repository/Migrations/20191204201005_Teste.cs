@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class CriarBanco : Migration
+    public partial class Teste : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -76,7 +76,7 @@ namespace Repository.Migrations
                 {
                     IdContaCliente = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ContaDoClienteIdConta = table.Column<int>(nullable: false),
+                    ContaDoClienteIdConta = table.Column<int>(nullable: true),
                     PessoaIdCliente = table.Column<int>(nullable: true),
                     Limite = table.Column<double>(nullable: false),
                     Saldo = table.Column<double>(nullable: false),
@@ -91,7 +91,7 @@ namespace Repository.Migrations
                         column: x => x.ContaDoClienteIdConta,
                         principalTable: "TB_Conta",
                         principalColumn: "IdConta",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TB_ContaCliente_TB_Pessoa_PessoaIdCliente",
                         column: x => x.PessoaIdCliente,
@@ -110,7 +110,7 @@ namespace Repository.Migrations
                     DtVencimento = table.Column<DateTime>(nullable: false),
                     Valor = table.Column<double>(nullable: false),
                     CriadoEm = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<bool>(nullable: false)
+                    Status = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

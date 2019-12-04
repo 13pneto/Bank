@@ -54,7 +54,7 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdConta,Nome,Descricao,Status,CriadoEm")] Conta conta)
+        public async Task<IActionResult> Create(Conta conta)
         {
             if (ModelState.IsValid)
             {
@@ -82,11 +82,13 @@ namespace Bank.Controllers
         }
 
         // POST: Conta/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Conta conta)
+        public async Task<IActionResult> Edit(int id, Conta conta)
         {
-            if (conta.IdConta != conta.IdConta)
+            if (id != conta.IdConta)
             {
                 return NotFound();
             }
@@ -115,25 +117,33 @@ namespace Bank.Controllers
         }
 
         // GET: Conta/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? IdContaCliente)
         {
-            if (id == null)
+            if (IdContaCliente == null)
             {
                 return NotFound();
             }
 
-            var conta = await _context.Contas.FirstOrDefaultAsync(m => m.IdConta == id);
-
+            var conta = await _context.Contas
+                .FirstOrDefaultAsync(m => m.IdConta == IdContaCliente);
             if (conta == null)
             {
                 return NotFound();
             }
 
+            return View(conta);
+        }
+
+        // POST: Conta/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int IdContaCliente)
+        {
+            var conta = await _context.Contas.FindAsync(IdContaCliente);
             _context.Contas.Remove(conta);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
 
         private bool ContaExists(int id)
         {

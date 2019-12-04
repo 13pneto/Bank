@@ -13,9 +13,13 @@ namespace Bank.Controllers
     public class ContaClienteController : Controller
     {
         private readonly Context _context;
+        private readonly ContaDAO _contaDAO;
+        private readonly ContaClienteDAO _contaClienteDAO;
 
-        public ContaClienteController(Context context)
+        public ContaClienteController(Context context, ContaDAO contaDAO, ContaClienteDAO contaClienteDAO)
         {
+            _contaClienteDAO = contaClienteDAO;
+            _contaDAO = contaDAO;
             _context = context;
         }
 
@@ -87,7 +91,7 @@ namespace Bank.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ContaCliente contaCliente)
-        { 
+        {
 
             if (ModelState.IsValid)
             {
@@ -133,9 +137,9 @@ namespace Bank.Controllers
         // POST: ContaCliente/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int IdContaCliente)
         {
-            var contaCliente = await _context.ContaClientes.FindAsync(id);
+            var contaCliente = await _context.ContaClientes.FindAsync(IdContaCliente);
             _context.ContaClientes.Remove(contaCliente);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -144,6 +148,74 @@ namespace Bank.Controllers
         private bool ContaClienteExists(int id)
         {
             return _context.ContaClientes.Any(e => e.IdContaCliente == id);
+        }
+
+        public IActionResult Saque(int IdContaCliente, float ValorSaque)
+        {
+            var conta = _contaClienteDAO.BuscarPorId(IdContaCliente);
+
+            if (conta != null)
+            {
+                if (conta.Saldo >= ValorSaque)
+                {
+                    conta.Saldo -= ValorSaque;
+                    return View(IdContaCliente);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Não possui saldo suficiente para realizar esse saque!");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Deposito(int IdContaCliente, double ValorDeposito)
+        {
+            var conta = _contaClienteDAO.BuscarPorId(IdContaCliente);
+
+            if (conta != null)
+            {
+                conta.Saldo += ValorDeposito;
+            }
+            else
+            {
+                ModelState.AddModelError("", "Não foi possível realizar o depósito!");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Transferencia(int IdContaOrigem, int IdContaDestino, double ValorTransf)
+        {
+            var contaOrigem = _contaClienteDAO.BuscarPorId(IdContaOrigem);
+            var contaDestino = _contaClienteDAO.BuscarPorId(IdContaDestino);
+
+            double saldoContaOrigem = contaOrigem.Saldo;
+
+            if (contaOrigem != null && contaDestino != null)
+            {
+                if (ValorTransf > saldoContaOrigem)
+                {
+                    ModelState.AddModelError("", "Não foi possível realizar o depósito!");
+                }
+
+                contaOrigem.Saldo -= ValorTransf;
+                contaDestino.Saldo += ValorTransf;
+            }
+            else
+            {
+                ModelState.AddModelError("", "Não foi possível encontrar uma das contas!");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult OperacaoBoleto()
+        {
+            return View();
         }
     }
 }

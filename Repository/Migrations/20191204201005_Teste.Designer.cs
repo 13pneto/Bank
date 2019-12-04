@@ -10,8 +10,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191203215027_CriarBanco")]
-    partial class CriarBanco
+    [Migration("20191204201005_Teste")]
+    partial class Teste
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,7 @@ namespace Repository.Migrations
 
                     b.Property<DateTime>("DtVencimento");
 
-                    b.Property<bool>("Status");
+                    b.Property<string>("Status");
 
                     b.Property<double>("Valor");
 
@@ -71,7 +71,7 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ContaDoClienteIdConta");
+                    b.Property<int?>("ContaDoClienteIdConta");
 
                     b.Property<DateTime>("CriadoEm");
 
@@ -156,8 +156,7 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Domain.Conta", "ContaDoCliente")
                         .WithMany()
-                        .HasForeignKey("ContaDoClienteIdConta")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ContaDoClienteIdConta");
 
                     b.HasOne("Domain.Pessoa", "Pessoa")
                         .WithMany()
