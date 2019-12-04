@@ -31,7 +31,7 @@ namespace Repository.Migrations
 
                     b.Property<DateTime>("DtVencimento");
 
-                    b.Property<bool>("Status");
+                    b.Property<string>("Status");
 
                     b.Property<double>("Valor");
 
@@ -69,7 +69,7 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ContaDoClienteIdConta");
+                    b.Property<int?>("ContaDoClienteIdConta");
 
                     b.Property<DateTime>("CriadoEm");
 
@@ -154,8 +154,7 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Domain.Conta", "ContaDoCliente")
                         .WithMany()
-                        .HasForeignKey("ContaDoClienteIdConta")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ContaDoClienteIdConta");
 
                     b.HasOne("Domain.Pessoa", "Pessoa")
                         .WithMany()

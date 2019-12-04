@@ -12,8 +12,8 @@ namespace Domain
         [Key]
         public int IdContaCliente { get; set; }
 
-        [Display(Name = "Conta do cliente:")]
-        [Required(ErrorMessage = "Campo obrigatório!")]
+        //[Display(Name = "Conta do cliente:")]
+        //[Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaDoCliente { get; set; }
 
         public Pessoa Pessoa{ get; set; }

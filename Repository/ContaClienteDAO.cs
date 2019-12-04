@@ -51,5 +51,11 @@ namespace Repository
             }
             return false;                  //Retorna false caso nao encontre
         }
+
+        //Metodo para adicionar saldo na conta do cliente
+        public static void AdicionarSaldo(ContaCliente c, double valor)
+        {
+            c.Saldo += valor;
+        }
     }
 }

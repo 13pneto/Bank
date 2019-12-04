@@ -7,8 +7,10 @@ using System.Text;
 namespace Domain
 {
     [Table("TB_Boleto")]
+
     public class Boleto
     {
+
         [Key]
         public int IdBoleto { get; set; }
 
@@ -25,11 +27,14 @@ namespace Domain
         public double Valor { get; set; }
 
         public DateTime CriadoEm { get; set; }
-        public bool Status { get; set; }              //True = Ativo | False = Inativo (vencido/cancelado)
-
+        public string Status { get; set; }   
+        
+        /// <summary>
+        /// STATUS: NP = NAO PAGO /// PG = PAGO /// ES = ESTORNADO
+        /// </summary>
         public Boleto()
         {
-            this.Status = true;
+            this.Status = "NP"; 
             this.CriadoEm = DateTime.Now;
         }
 

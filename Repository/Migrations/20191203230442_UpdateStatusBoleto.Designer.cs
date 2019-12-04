@@ -10,8 +10,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20191202234800_AjusteClasseBoleto")]
-    partial class AjusteClasseBoleto
+    [Migration("20191203230442_UpdateStatusBoleto")]
+    partial class UpdateStatusBoleto
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,7 @@ namespace Repository.Migrations
 
                     b.Property<DateTime>("DtVencimento");
 
-                    b.Property<bool>("Status");
+                    b.Property<string>("Status");
 
                     b.Property<double>("Valor");
 
@@ -71,11 +71,13 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ContaDoClienteIdConta");
+                    b.Property<int?>("ContaDoClienteIdConta");
 
                     b.Property<DateTime>("CriadoEm");
 
                     b.Property<double>("Limite");
+
+                    b.Property<int?>("PessoaIdCliente");
 
                     b.Property<double>("Saldo");
 
@@ -84,6 +86,8 @@ namespace Repository.Migrations
                     b.HasKey("IdContaCliente");
 
                     b.HasIndex("ContaDoClienteIdConta");
+
+                    b.HasIndex("PessoaIdCliente");
 
                     b.ToTable("TB_ContaCliente");
                 });
@@ -152,8 +156,11 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Domain.Conta", "ContaDoCliente")
                         .WithMany()
-                        .HasForeignKey("ContaDoClienteIdConta")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ContaDoClienteIdConta");
+
+                    b.HasOne("Domain.Pessoa", "Pessoa")
+                        .WithMany()
+                        .HasForeignKey("PessoaIdCliente");
                 });
 
             modelBuilder.Entity("Domain.Movimentacao", b =>

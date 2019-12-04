@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Repository
 
         public List<Boleto> ListarTodos()
         {
-            return _context.Boletos.ToList();
+            return _context.Boletos.Include(x => x.ContaOrigem).Include(y => y.ContaOrigem.Pessoa).Include(z => z.ContaOrigem.ContaDoCliente).ToList();
         }
 
         public bool RemoverPorId(int id)
@@ -48,6 +49,15 @@ namespace Repository
                 return true;
             }
             return false;                  //Retorna false caso nao encontre
+        }
+
+        //Efetivar o pagamento de um boleto
+        public void EfetivarBoleto(Boleto b)
+        {
+            b.Status = "PG";
+            _context.Entry(b).State = EntityState.Modified;
+            ContaClienteDAO.AdicionarSaldo(b.ContaOrigem, b.Valor);
+            _context.SaveChanges();
         }
     }
 }

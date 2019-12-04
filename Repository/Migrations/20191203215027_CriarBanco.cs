@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class AjusteClasseBoleto : Migration
+    public partial class CriarBanco : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,29 +42,6 @@ namespace Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TB_ContaCliente",
-                columns: table => new
-                {
-                    IdContaCliente = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ContaDoClienteIdConta = table.Column<int>(nullable: false),
-                    Limite = table.Column<double>(nullable: false),
-                    Saldo = table.Column<double>(nullable: false),
-                    Status = table.Column<bool>(nullable: false),
-                    CriadoEm = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TB_ContaCliente", x => x.IdContaCliente);
-                    table.ForeignKey(
-                        name: "FK_TB_ContaCliente_TB_Conta_ContaDoClienteIdConta",
-                        column: x => x.ContaDoClienteIdConta,
-                        principalTable: "TB_Conta",
-                        principalColumn: "IdConta",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TB_Movimentacao",
                 columns: table => new
                 {
@@ -91,6 +68,36 @@ namespace Repository.Migrations
                         principalTable: "TB_Conta",
                         principalColumn: "IdConta",
                         onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TB_ContaCliente",
+                columns: table => new
+                {
+                    IdContaCliente = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ContaDoClienteIdConta = table.Column<int>(nullable: false),
+                    PessoaIdCliente = table.Column<int>(nullable: true),
+                    Limite = table.Column<double>(nullable: false),
+                    Saldo = table.Column<double>(nullable: false),
+                    Status = table.Column<bool>(nullable: false),
+                    CriadoEm = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_ContaCliente", x => x.IdContaCliente);
+                    table.ForeignKey(
+                        name: "FK_TB_ContaCliente_TB_Conta_ContaDoClienteIdConta",
+                        column: x => x.ContaDoClienteIdConta,
+                        principalTable: "TB_Conta",
+                        principalColumn: "IdConta",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TB_ContaCliente_TB_Pessoa_PessoaIdCliente",
+                        column: x => x.PessoaIdCliente,
+                        principalTable: "TB_Pessoa",
+                        principalColumn: "IdCliente",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,6 +134,11 @@ namespace Repository.Migrations
                 column: "ContaDoClienteIdConta");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TB_ContaCliente_PessoaIdCliente",
+                table: "TB_ContaCliente",
+                column: "PessoaIdCliente");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TB_Movimentacao_ContaOrigemIdConta",
                 table: "TB_Movimentacao",
                 column: "ContaOrigemIdConta");
@@ -146,13 +158,13 @@ namespace Repository.Migrations
                 name: "TB_Movimentacao");
 
             migrationBuilder.DropTable(
-                name: "TB_Pessoa");
-
-            migrationBuilder.DropTable(
                 name: "TB_ContaCliente");
 
             migrationBuilder.DropTable(
                 name: "TB_Conta");
+
+            migrationBuilder.DropTable(
+                name: "TB_Pessoa");
         }
     }
 }

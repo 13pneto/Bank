@@ -15,16 +15,19 @@ namespace Bank.Controllers
     {
         private readonly Context _context;
         private readonly ContaClienteDAO _contaClienteDAO;
-        public BoletoController(Context context, ContaClienteDAO contaClienteDAO)
+        private readonly BoletoDAO _boletoDAO;
+        public BoletoController(Context context, ContaClienteDAO contaClienteDAO, BoletoDAO boletoDAO)
         {
             _context = context;
             _contaClienteDAO = contaClienteDAO;
+            _boletoDAO = boletoDAO;
         }
 
         // GET: Boleto
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Boletos.ToListAsync());
+            List<Boleto> boletos = _boletoDAO.ListarTodos();
+            return View(boletos);
         }
 
         // GET: Boleto/Details/5
@@ -56,7 +59,7 @@ namespace Bank.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BuscarConta(Boleto b)
-        {
+         {
             b.ContaOrigem = _contaClienteDAO.BuscarPorId(b.ContaOrigem.IdContaCliente);
 
             if (b.ContaOrigem == null)
@@ -92,6 +95,7 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Boleto boleto)
         {
+            boleto.ContaOrigem = _contaClienteDAO.BuscarPorId(boleto.ContaOrigem.IdContaCliente);
             if (ModelState.IsValid)
             {
 
