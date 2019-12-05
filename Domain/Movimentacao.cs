@@ -15,16 +15,18 @@ namespace Domain
 
         [Display(Name = "Conta origem:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
-        public Conta ContaOrigem { get; set; }
+        [ForeignKey("FK_ContaOrigem")]
+        public ContaCliente ContaOrigem { get; set; }
 
         [Display(Name = "Conta destino:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
         [ForeignKey("FK_ContaDestino")]
-        public Conta ContaDestino { get; set; }
+        public ContaCliente ContaDestino { get; set; }
 
         [Display(Name = "Valor:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
         public double Valor { get; set; }
+        public string TipoMovimentacao { get; set; }        //Saque, deposito, transferencia, pagamento boleto
 
         public DateTime DtMovimentacao { get; set; }
 

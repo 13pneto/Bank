@@ -48,13 +48,6 @@ namespace Bank.Controllers
             return View(boleto);
         }
 
-        // GET: Boleto/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-
         //POST: BUSCAR CONTA
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -86,7 +79,6 @@ namespace Bank.Controllers
             }
             return View();
         }
-
 
         // POST: Boleto/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -186,5 +178,61 @@ namespace Bank.Controllers
         {
             return _context.Boletos.Any(e => e.IdBoleto == id);
         }
+
+
+
+
+
+
+        #region Efetivar
+
+        //POST: BUSCAR BOLETO
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuscarBoleto(Boleto b)
+        {
+            b = _boletoDAO.BuscarPorId(b.IdBoleto);
+
+            if (b== null)
+            {
+                ModelState.AddModelError("", "Boleto não encontrado!");
+            }
+
+            TempData["BoletoEncontrado"] = JsonConvert.SerializeObject(b);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Efetivar));
+        }
+
+        public IActionResult Efetivar()
+        {
+            Boleto b;
+
+            if (TempData["BoletoEncontrado"] != null)
+            {
+                b = new Boleto();
+                b = JsonConvert.DeserializeObject<Boleto>(TempData["BoletoEncontrado"].ToString());
+                return View(b);
+            }
+            return View();
+        }
+
+        //Efetivar transação
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Efetivar(Boleto boleto)
+        {
+            boleto = _boletoDAO.BuscarPorId(boleto.IdBoleto);
+
+            if (ModelState.IsValid)
+            {
+                //_context.Add(boleto);
+                _boletoDAO.EfetivarBoleto(boleto);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(boleto);
+        }
+        #endregion
     }
 }

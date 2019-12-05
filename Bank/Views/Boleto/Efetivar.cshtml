@@ -1,0 +1,84 @@
+﻿@model Domain.Boleto
+
+@{
+    ViewData["Title"] = "Efetivar";
+}
+
+<h2>Create</h2>
+
+<h4>Boleto</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Efetivar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdBoleto" class="control-label"></label>
+                <input asp-for="IdBoleto" class="form-control" />
+                <span asp-validation-for="IdBoleto" class="text-danger"></span>
+                <input type="submit" asp-action="BuscarBoleto" value="Buscar" class="btn btn-warning" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Efetivar" class="btn btn-success" style="width:100%" />
+            </div>
+        </form>
+    </div>
+
+
+    <div class="col-md-6">
+
+        @*-------------------------------Boleto encontrado--------------------------------*@ 
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="IdConta">Id Boleto</label>
+                <div class="col-md-12">
+                    <input id="IdBoleto" asp-for="IdBoleto" name="IdBoleto" type="text" disabled placeholder="IdBoleto" class="form-control input-md">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Conta">Conta recebedor</label>
+                <div class="col-md-12">
+                    <input id="ContaRecebedor" asp-for="ContaOrigem.IdContaCliente" name="ContaRecebedor" type="text" disabled placeholder="Conta recebedor" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Nome">Titular conta a receber</label>
+                <div class="col-md-12">
+                    <input id="ContaOrigemPessoa" asp-for="ContaOrigem.Pessoa.Nome" name="ContaOrigemPessoa" type="text" disabled placeholder="Titular conta a receber" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Valor">Valor R$</label>
+                <div class="col-md-12">
+                    <input id="Valor" asp-for="Valor" name="Valor" type="text" disabled placeholder="Valor R$" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="CriadoEm">Boleto gerado em</label>
+                <div class="col-md-12">
+                    <input id="CriadoEm" asp-for="CriadoEm" name="CriadoEm" type="text" disabled placeholder="Boleto gerado em ..." class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Status">Status</label>
+                <div class="col-md-12">
+                    <input id="Status" asp-for="Status" name="Status" type="text" disabled placeholder="Status" class="form-control input-md">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <input type="submit" style="width:100%"value="Limpar" class="btn btn-danger" />
+            </div>
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Retornar para lista</a>
+</div>
+
