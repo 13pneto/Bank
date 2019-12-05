@@ -29,10 +29,9 @@ namespace Bank.Controllers
             if (_pessoaDAO.BuscarPorCpf(Cpf) != null)
             {
                 Pessoa cpfLogin = _pessoaDAO.BuscarPorCpf(Cpf);
-                return View(cpfLogin);
+                
             }
-            ModelState.AddModelError("", "CPF não cadastrado!");
-            return View();
+            return RedirectToAction("Index", "Conta");
         }
 
 

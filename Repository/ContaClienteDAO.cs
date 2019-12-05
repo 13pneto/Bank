@@ -57,5 +57,16 @@ namespace Repository
         {
             c.Saldo += valor;
         }
+
+        public bool RealizaSaque(ContaCliente conta, double ValorSaque)
+        {
+            if (conta.Saldo >= ValorSaque)
+            {
+                conta.Saldo -= ValorSaque;
+                return true;
+            }
+            return false;
+        }
+
     }
 }

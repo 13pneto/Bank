@@ -150,20 +150,15 @@ namespace Bank.Controllers
             return _context.ContaClientes.Any(e => e.IdContaCliente == id);
         }
 
-        public IActionResult Saque(int IdContaCliente, float ValorSaque)
+        public IActionResult Saque(int IdContaCliente, double ValorSaque)
         {
             var conta = _contaClienteDAO.BuscarPorId(IdContaCliente);
 
             if (conta != null)
             {
-                if (conta.Saldo >= ValorSaque)
+                if (_contaClienteDAO.RealizaSaque(conta, ValorSaque))
                 {
-                    conta.Saldo -= ValorSaque;
-                    return View(IdContaCliente);
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Não possui saldo suficiente para realizar esse saque!");
+                    return RedirectToAction(nameof(Index));
                 }
             }
             else
@@ -211,11 +206,6 @@ namespace Bank.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        public IActionResult OperacaoBoleto()
-        {
-            return View();
         }
     }
 }

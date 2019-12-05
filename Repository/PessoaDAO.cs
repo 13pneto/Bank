@@ -32,8 +32,7 @@ namespace Repository
 
         public Pessoa BuscarPorCpf(string cpf)
         {
-            return _context.Pessoas.FirstOrDefault
-            (x => x.Cpf.Equals(cpf));
+            return _context.Pessoas.FirstOrDefault(x => x.Cpf.Equals(cpf));
         }
 
         public bool Cadastrar(Pessoa p)
