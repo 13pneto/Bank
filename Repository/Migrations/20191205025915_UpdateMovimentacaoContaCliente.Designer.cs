@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository;
 
 namespace Repository.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20191205025915_UpdateMovimentacaoContaCliente")]
+    partial class UpdateMovimentacaoContaCliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +27,7 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ContaOrigemIdContaCliente");
+                    b.Property<int>("ContaOrigemIdContaCliente");
 
                     b.Property<DateTime>("CriadoEm");
 
@@ -96,25 +98,22 @@ namespace Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ContaOrigemIdContaCliente");
+
                     b.Property<DateTime>("DtMovimentacao");
 
                     b.Property<int?>("FK_ContaDestino")
                         .IsRequired();
 
-                    b.Property<int?>("FK_ContaOrigem")
-                        .IsRequired();
-
                     b.Property<bool>("Status");
-
-                    b.Property<string>("TipoMovimentacao");
 
                     b.Property<double>("Valor");
 
                     b.HasKey("IdMovimento");
 
-                    b.HasIndex("FK_ContaDestino");
+                    b.HasIndex("ContaOrigemIdContaCliente");
 
-                    b.HasIndex("FK_ContaOrigem");
+                    b.HasIndex("FK_ContaDestino");
 
                     b.ToTable("TB_Movimentacao");
                 });
@@ -149,7 +148,8 @@ namespace Repository.Migrations
                 {
                     b.HasOne("Domain.ContaCliente", "ContaOrigem")
                         .WithMany()
-                        .HasForeignKey("ContaOrigemIdContaCliente");
+                        .HasForeignKey("ContaOrigemIdContaCliente")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.ContaCliente", b =>
@@ -165,14 +165,14 @@ namespace Repository.Migrations
 
             modelBuilder.Entity("Domain.Movimentacao", b =>
                 {
+                    b.HasOne("Domain.ContaCliente", "ContaOrigem")
+                        .WithMany()
+                        .HasForeignKey("ContaOrigemIdContaCliente")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Domain.ContaCliente", "ContaDestino")
                         .WithMany()
                         .HasForeignKey("FK_ContaDestino")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.ContaCliente", "ContaOrigem")
-                        .WithMany()
-                        .HasForeignKey("FK_ContaOrigem")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

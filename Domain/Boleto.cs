@@ -14,8 +14,8 @@ namespace Domain
         [Key]
         public int IdBoleto { get; set; }
 
-        [Display(Name = "Conta de Origem:")]
-        [Required(ErrorMessage = "Campo obrigatório!")]
+        //[Display(Name = "Conta de Origem:")]
+        //[Required(ErrorMessage = "Campo obrigatório!")]
         public ContaCliente ContaOrigem { get; set; }
 
         [Display(Name = "Data vencimento:")]

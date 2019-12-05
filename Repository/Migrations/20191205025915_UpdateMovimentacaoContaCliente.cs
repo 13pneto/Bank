@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Repository.Migrations
 {
-    public partial class Teste : Migration
+    public partial class UpdateMovimentacaoContaCliente : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,35 +39,6 @@ namespace Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_Pessoa", x => x.IdCliente);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TB_Movimentacao",
-                columns: table => new
-                {
-                    IdMovimento = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ContaOrigemIdConta = table.Column<int>(nullable: false),
-                    FK_ContaDestino = table.Column<int>(nullable: false),
-                    Valor = table.Column<double>(nullable: false),
-                    DtMovimentacao = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TB_Movimentacao", x => x.IdMovimento);
-                    table.ForeignKey(
-                        name: "FK_TB_Movimentacao_TB_Conta_ContaOrigemIdConta",
-                        column: x => x.ContaOrigemIdConta,
-                        principalTable: "TB_Conta",
-                        principalColumn: "IdConta",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_TB_Movimentacao_TB_Conta_FK_ContaDestino",
-                        column: x => x.FK_ContaDestino,
-                        principalTable: "TB_Conta",
-                        principalColumn: "IdConta",
-                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,6 +94,35 @@ namespace Repository.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TB_Movimentacao",
+                columns: table => new
+                {
+                    IdMovimento = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ContaOrigemIdContaCliente = table.Column<int>(nullable: false),
+                    FK_ContaDestino = table.Column<int>(nullable: false),
+                    Valor = table.Column<double>(nullable: false),
+                    DtMovimentacao = table.Column<DateTime>(nullable: false),
+                    Status = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_Movimentacao", x => x.IdMovimento);
+                    table.ForeignKey(
+                        name: "FK_TB_Movimentacao_TB_ContaCliente_ContaOrigemIdContaCliente",
+                        column: x => x.ContaOrigemIdContaCliente,
+                        principalTable: "TB_ContaCliente",
+                        principalColumn: "IdContaCliente",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_TB_Movimentacao_TB_ContaCliente_FK_ContaDestino",
+                        column: x => x.FK_ContaDestino,
+                        principalTable: "TB_ContaCliente",
+                        principalColumn: "IdContaCliente",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_TB_Boleto_ContaOrigemIdContaCliente",
                 table: "TB_Boleto",
@@ -139,9 +139,9 @@ namespace Repository.Migrations
                 column: "PessoaIdCliente");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_Movimentacao_ContaOrigemIdConta",
+                name: "IX_TB_Movimentacao_ContaOrigemIdContaCliente",
                 table: "TB_Movimentacao",
-                column: "ContaOrigemIdConta");
+                column: "ContaOrigemIdContaCliente");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TB_Movimentacao_FK_ContaDestino",
