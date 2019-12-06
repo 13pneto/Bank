@@ -53,14 +53,18 @@ namespace Repository
         }
 
         //Metodo para adicionar saldo na conta do cliente
-        public static void AdicionarSaldo(ContaCliente c, double valor)
+        public void AdicionarSaldo(ContaCliente c, double valor)
         {
             c.Saldo += valor;
+            _context.Entry(c).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
-        public static void RetirarSaldo(ContaCliente c, double valor)
+        public void RetirarSaldo(ContaCliente c, double valor)
         {
             c.Saldo -= valor;
+            _context.Entry(c).State = EntityState.Modified;
+            _context.SaveChanges();
         }
 
         public bool RealizaSaque(ContaCliente conta, double ValorSaque)
@@ -68,10 +72,10 @@ namespace Repository
             if (conta.Saldo >= ValorSaque)
             {
                 conta.Saldo -= ValorSaque;
+                _context.SaveChanges();
                 return true;
             }
             return false;
         }
-
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Repository;
+using Newtonsoft.Json;
 
 namespace Bank.Controllers
 {
@@ -23,6 +24,7 @@ namespace Bank.Controllers
             _context = context;
         }
 
+        #region Defaults
         // GET: ContaCliente
         public async Task<IActionResult> Index()
         {
@@ -150,23 +152,89 @@ namespace Bank.Controllers
             return _context.ContaClientes.Any(e => e.IdContaCliente == id);
         }
 
-        public IActionResult Saque(int IdContaCliente, double ValorSaque)
-        {
-            var conta = _contaClienteDAO.BuscarPorId(IdContaCliente);
 
-            if (conta != null)
-            {
-                if (_contaClienteDAO.RealizaSaque(conta, ValorSaque))
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-            }
-            else
+
+        #endregion
+
+        #region Saque
+
+        public async Task<IActionResult> BuscarContaClienteSaque(ContaCliente c)
+        {
+            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
+
+            if (c == null)
             {
                 ModelState.AddModelError("", "Conta não encontrada!");
             }
-            return RedirectToAction(nameof(Index));
+
+            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Saque));
         }
+
+        public IActionResult Saque()
+        {
+            ContaCliente c;
+
+            if (TempData["ContaEncontrada"] != null)
+            {
+                c = new ContaCliente();
+                c = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaEncontrada"].ToString());
+                return View(c);
+            }
+            return View();
+
+            //var conta = _contaClienteDAO.BuscarPorId(IdContaCliente);
+
+            //if (conta != null)
+            //{
+            //    if (_contaClienteDAO.RealizaSaque(conta, ValorSaque))
+            //    {
+            //        return RedirectToAction(nameof(Index));
+            //    }
+            //}
+            //else
+            //{
+            //    ModelState.AddModelError("", "Conta não encontrada!");
+            //}
+            //return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Saque(ContaCliente conta, double valorSaque)
+        {
+            conta = _contaClienteDAO.BuscarPorId(conta.IdContaCliente);
+
+            if (conta == null)                                          //Verificar se a conta foi encontrada
+            {
+                ModelState.AddModelError("", "Favor informar a conta!");
+            }
+
+            else
+            {
+
+                if (ModelState.IsValid)
+                {
+
+                    if (valorSaque > conta.Saldo)
+                    {
+                        ModelState.AddModelError("", "Não é possivel sacar, saldo insuficiente!");
+                    }
+                    else
+                    {
+                        _contaClienteDAO.RealizaSaque(conta, valorSaque);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+            }
+
+            return View(conta);
+        }
+
+        #endregion
 
         public IActionResult Deposito(int IdContaCliente, double ValorDeposito)
         {

@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                Numero Conta
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Limite)
             </th>
             <th>
@@ -30,6 +33,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdContaCliente)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Limite)
             </td>

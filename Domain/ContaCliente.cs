@@ -10,6 +10,9 @@ namespace Domain
     public class ContaCliente
     {
         [Key]
+
+        [Display(Name = "Conta do cliente:")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public int IdContaCliente { get; set; }
 
         //[Display(Name = "Conta do cliente:")]

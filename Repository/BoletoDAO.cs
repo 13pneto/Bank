@@ -11,10 +11,12 @@ namespace Repository
     {
         private readonly Context _context;
         private readonly MovimentacaoDAO _movimentacaoDAO;
-        public BoletoDAO(Context context, MovimentacaoDAO movimentacaoDAO)
+        private readonly ContaClienteDAO _contaClienteDAO;
+        public BoletoDAO(Context context, MovimentacaoDAO movimentacaoDAO, ContaClienteDAO contaClienteDAO)
         {
             _context = context;
             _movimentacaoDAO = movimentacaoDAO;
+            _contaClienteDAO = contaClienteDAO;
         }
 
         public bool Cadastrar(Boleto b)
@@ -59,7 +61,7 @@ namespace Repository
 
             b.Status = "PG";
             _context.Entry(b).State = EntityState.Modified;
-            ContaClienteDAO.AdicionarSaldo(b.ContaOrigem, b.Valor); //Adiciona saldo na conta
+            _contaClienteDAO.AdicionarSaldo(b.ContaOrigem, b.Valor); //Adiciona saldo na conta
 
             //Gerar uma movimentação
             m.DtMovimentacao = DateTime.Now;
@@ -74,10 +76,11 @@ namespace Repository
         public void EstornarBoleto(Boleto b){
 
             Movimentacao m = new Movimentacao();
+ 
 
             b.Status = "ES";    //ES == ESTORNADO
             _context.Entry(b).State = EntityState.Modified;
-            ContaClienteDAO.RetirarSaldo(b.ContaOrigem, b.Valor); //Remove saldo da conta
+            _contaClienteDAO.RetirarSaldo(b.ContaOrigem, b.Valor); //Remove saldo da conta
 
             //Gerar uma movimentação
             m.DtMovimentacao = DateTime.Now;
