@@ -58,6 +58,11 @@ namespace Repository
             c.Saldo += valor;
         }
 
+        public static void RetirarSaldo(ContaCliente c, double valor)
+        {
+            c.Saldo -= valor;
+        }
+
         public bool RealizaSaque(ContaCliente conta, double ValorSaque)
         {
             if (conta.Saldo >= ValorSaque)

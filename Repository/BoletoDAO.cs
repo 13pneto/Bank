@@ -70,5 +70,25 @@ namespace Repository
             _movimentacaoDAO.Cadastrar(m);
             _context.SaveChanges();
         }
+
+        public void EstornarBoleto(Boleto b){
+
+            Movimentacao m = new Movimentacao();
+
+            b.Status = "ES";    //ES == ESTORNADO
+            _context.Entry(b).State = EntityState.Modified;
+            ContaClienteDAO.RetirarSaldo(b.ContaOrigem, b.Valor); //Remove saldo da conta
+
+            //Gerar uma movimentação
+            m.DtMovimentacao = DateTime.Now;
+            m.ContaDestino = b.ContaOrigem;             //Para estorno de boleto, o valor será retirado da conta que gerou o boleto. Como quem paga é um usuário (lotérica) não tem como
+            m.ContaOrigem = b.ContaOrigem;              //o sistema controlar a devolução, apenas será informado o estorno e caixa deverá voltar o valor ao cliente pagador
+            m.TipoMovimentacao = "Estorno Boleto";
+
+            _movimentacaoDAO.Cadastrar(m);
+            _context.SaveChanges();
+
+}   
+
     }
 }

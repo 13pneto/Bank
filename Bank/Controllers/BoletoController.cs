@@ -52,7 +52,7 @@ namespace Bank.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> BuscarConta(Boleto b)
-         {
+        {
             b.ContaOrigem = _contaClienteDAO.BuscarPorId(b.ContaOrigem.IdContaCliente);
 
             if (b.ContaOrigem == null)
@@ -69,7 +69,7 @@ namespace Bank.Controllers
         public IActionResult Create()
         {
             Boleto b;
-           
+
             if (TempData["ContaOrigem"] != null)
             {
                 b = new Boleto();
@@ -180,10 +180,6 @@ namespace Bank.Controllers
         }
 
 
-
-
-
-
         #region Efetivar
 
         //POST: BUSCAR BOLETO
@@ -193,7 +189,7 @@ namespace Bank.Controllers
         {
             b = _boletoDAO.BuscarPorId(b.IdBoleto);
 
-            if (b== null)
+            if (b == null)
             {
                 ModelState.AddModelError("", "Boleto não encontrado!");
             }
@@ -226,13 +222,77 @@ namespace Bank.Controllers
 
             if (ModelState.IsValid)
             {
-                //_context.Add(boleto);
-                _boletoDAO.EfetivarBoleto(boleto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (boleto.Status != "NP") //DIFERENTE DE NP (NAO PAGO)
+                {
+                    ModelState.AddModelError("", "Não é possivel pagar um boleto que seja diferente do status 'NP' (NÃO PAGO)");
+                }
+                else
+                {
+                    //_context.Add(boleto);
+                    _boletoDAO.EfetivarBoleto(boleto);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(boleto);
         }
+        #endregion
+
+        #region Estornar
+        //POST: BUSCAR BOLETO
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuscarBoletoEstornar(Boleto b)
+        {
+            b = _boletoDAO.BuscarPorId(b.IdBoleto);
+
+            if (b == null)
+            {
+                ModelState.AddModelError("", "Boleto não encontrado!");
+            }
+
+            TempData["BoletoEncontrado"] = JsonConvert.SerializeObject(b);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Estornar));
+        }
+
+        public IActionResult Estornar()
+        {
+            Boleto b;
+
+            if (TempData["BoletoEncontrado"] != null)
+            {
+                b = new Boleto();
+                b = JsonConvert.DeserializeObject<Boleto>(TempData["BoletoEncontrado"].ToString());
+                return View(b);
+            }
+            return View();
+        }
+
+        //Efetivar transação
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Estornar(Boleto boleto)
+        {
+            boleto = _boletoDAO.BuscarPorId(boleto.IdBoleto);
+
+            if (ModelState.IsValid)
+            {
+                if (boleto.Status != "PG")
+                {
+                    ModelState.AddModelError("", "Não é possivel estornar um boleto que ainda não foi PAGO!");
+                }
+                else
+                {
+                    _boletoDAO.EstornarBoleto(boleto);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(boleto);
+        }
+
         #endregion
     }
 }
