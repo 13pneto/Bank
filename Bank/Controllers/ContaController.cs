@@ -117,15 +117,15 @@ namespace Bank.Controllers
         }
 
         // GET: Conta/Delete/5
-        public async Task<IActionResult> Delete(int? IdContaCliente)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (IdContaCliente == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var conta = await _context.Contas
-                .FirstOrDefaultAsync(m => m.IdConta == IdContaCliente);
+                .FirstOrDefaultAsync(m => m.IdConta == id);
             if (conta == null)
             {
                 return NotFound();
@@ -137,9 +137,9 @@ namespace Bank.Controllers
         // POST: Conta/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int IdContaCliente)
+        public async Task<IActionResult> DeleteConfirmed(int IdConta)
         {
-            var conta = await _context.Contas.FindAsync(IdContaCliente);
+            var conta = await _context.Contas.FindAsync(IdConta);
             _context.Contas.Remove(conta);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

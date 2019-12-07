@@ -236,44 +236,132 @@ namespace Bank.Controllers
 
         #endregion
 
+        #region Deposito
+
+        public async Task<IActionResult> BuscarContaClienteDeposito(ContaCliente c)
+        {
+            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
+
+            if (c == null)
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+
+            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Deposito));
+        }
+
+        public IActionResult Deposito()
+        {
+            ContaCliente c;
+
+            if (TempData["ContaEncontrada"] != null)
+            {
+                c = new ContaCliente();
+                c = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaEncontrada"].ToString());
+                return View(c);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Deposito(int IdContaCliente, double ValorDeposito)
         {
             var conta = _contaClienteDAO.BuscarPorId(IdContaCliente);
 
-            if (conta != null)
+            if (conta == null)
             {
-                conta.Saldo += ValorDeposito;
+                ModelState.AddModelError("", "Conta não encontrada!");
             }
             else
             {
-                ModelState.AddModelError("", "Não foi possível realizar o depósito!");
+                _contaClienteDAO.RealizaDeposito(conta, ValorDeposito);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            return View(conta);
         }
 
+        #endregion
+
+        #region Transferencia
+
+        public async Task<IActionResult> BuscarContaClienteOrigem(ContaCliente c)
+        {
+            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
+
+            if (c == null)
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+
+            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Transferencia));
+        }
+
+        public async Task<IActionResult> BuscarContaClienteDestino(ContaCliente c)
+        {
+            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
+
+            if (c == null)
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+
+            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Transferencia));
+        }
+
+        public IActionResult Transferencia()
+        {
+            ContaCliente c;
+
+            if (TempData["ContaEncontrada"] != null)
+            {
+                c = new ContaCliente();
+                c = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaEncontrada"].ToString());
+                return View(c);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Transferencia(int IdContaOrigem, int IdContaDestino, double ValorTransf)
         {
             var contaOrigem = _contaClienteDAO.BuscarPorId(IdContaOrigem);
             var contaDestino = _contaClienteDAO.BuscarPorId(IdContaDestino);
 
-            double saldoContaOrigem = contaOrigem.Saldo;
-
-            if (contaOrigem != null && contaDestino != null)
+            if (contaOrigem == null && contaOrigem == contaDestino)
             {
-                if (ValorTransf > saldoContaOrigem)
+                ModelState.AddModelError("", "Conta de origem não encontrada!");
+
+                if (contaDestino == null)
                 {
-                    ModelState.AddModelError("", "Não foi possível realizar o depósito!");
+                    ModelState.AddModelError("", "Conta de destino não foi encontrada!");
                 }
-
-                contaOrigem.Saldo -= ValorTransf;
-                contaDestino.Saldo += ValorTransf;
+                else
+                {
+                    var isValid = _contaClienteDAO.RealizarTransferencia(contaOrigem, contaDestino, ValorTransf);
+                    
+                    if (isValid)
+                    {
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
             }
-            else
-            {
-                ModelState.AddModelError("", "Não foi possível encontrar uma das contas!");
-            }
-
-            return RedirectToAction(nameof(Index));
+            return View();
         }
+
+        #endregion
+
     }
 }

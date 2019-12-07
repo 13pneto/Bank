@@ -10,10 +10,12 @@ namespace Repository
     public class ContaClienteDAO : InterfaceDAO<ContaCliente>
     {
         private readonly Context _context;
+        private readonly MovimentacaoDAO _movimentacaoDAO;
 
-        public ContaClienteDAO(Context context)
+        public ContaClienteDAO(Context context, MovimentacaoDAO movimentacaoDAO)
         {
             _context = context;
+            _movimentacaoDAO = movimentacaoDAO;
         }
 
 
@@ -71,11 +73,58 @@ namespace Repository
         {
             if (conta.Saldo >= ValorSaque)
             {
+                Movimentacao m = new Movimentacao();
+
                 conta.Saldo -= ValorSaque;
+
+                m.DtMovimentacao = DateTime.Now;
+                m.ContaOrigem = conta;              //
+                m.TipoMovimentacao = "Saque";
+
+                _movimentacaoDAO.Cadastrar(m);
                 _context.SaveChanges();
+
                 return true;
             }
             return false;
+        }
+
+        public void RealizaDeposito(ContaCliente conta, double ValorDeposito)
+        {
+            Movimentacao m = new Movimentacao();
+
+            conta.Saldo += ValorDeposito;
+
+            m.DtMovimentacao = DateTime.Now;
+            m.ContaOrigem = conta;              //
+            m.TipoMovimentacao = "Deposito";
+
+            _movimentacaoDAO.Cadastrar(m);
+            _context.SaveChanges();
+        }
+
+        public bool RealizarTransferencia(ContaCliente contaOrigem, ContaCliente contaDestino, double ValorTransf)
+        {
+            Movimentacao m = new Movimentacao();
+            double saldoContaOrigem = contaOrigem.Saldo;
+
+            if (ValorTransf > saldoContaOrigem)
+            {
+                return false;
+            }
+
+            contaOrigem.Saldo -= ValorTransf;
+            contaDestino.Saldo += ValorTransf;
+
+
+            m.DtMovimentacao = DateTime.Now;
+            m.ContaOrigem = contaOrigem;              //
+            m.ContaDestino = contaDestino;              //
+            m.TipoMovimentacao = "Transferencia";
+
+            _movimentacaoDAO.Cadastrar(m);
+            _context.SaveChanges();
+            return true;
         }
     }
 }
