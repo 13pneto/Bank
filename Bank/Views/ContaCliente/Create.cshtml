@@ -17,20 +17,13 @@
                 <input asp-for="Limite" class="form-control" />
                 <span asp-validation-for="Limite" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Saldo" class="control-label"></label>
-                <input asp-for="Saldo" class="form-control" />
-                <span asp-validation-for="Saldo" class="text-danger"></span>
-            </div>
 
-            <div>
-                <select asp-for="ContaDoCliente" class="form-group">
-
-                    <option class="dropdown-item" value="@ViewBag.Contas">@ViewBag.Contas</option>                    
-
-                </select>
-
-            </div>
+            <select asp-for="ContaDoCliente" class="form-group">
+                @foreach (Domain.Conta item in @ViewBag.Contas)
+                {
+                    <option class="dropdown-item" value="@item">@item.Nome</option>
+                }
+            </select>
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -15,7 +15,7 @@ namespace Domain
         [Required(ErrorMessage = "Campo obrigatório!")]
         public int IdContaCliente { get; set; }
 
-        //[Display(Name = "Conta do cliente:")]
+        [Display(Name = "Conta do cliente:")]
         //[Required(ErrorMessage = "Campo obrigatório!")]
         public Conta ContaDoCliente { get; set; }
 

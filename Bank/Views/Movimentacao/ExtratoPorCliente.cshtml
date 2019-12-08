@@ -1,0 +1,179 @@
+﻿@model IEnumerable<Domain.Movimentacao>
+
+@{
+    ViewData["Title"] = "Index";
+    List<Movimentacao> movimentacoes = ViewBag.ExtratoPorCliente;
+    Movimentacao m = ViewBag.ContaEncontrada;
+}
+
+<head>
+    <style>
+        .fontSize {
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<h3>Extrato por Cliente</h3>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert-warning" style="text-align:center; margin-bottom:2%">
+            <b>Conta</b>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-12" for="IdConta">Conta de origem</label>
+                    <div class="col-md-12">
+                        <input id="Id" asp-for="@m.ContaOrigem.IdContaCliente" name="IdContaCliente" type="text" disabled placeholder="Numero da conta" class="form-control input-md">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="col-md-12" for="Titular">Titular</label>
+                    <div class="col-md-12">
+                        <input id="Nome" asp-for="@m.ContaOrigem.Pessoa.Nome" name="ContaClienteNome" type="text" disabled placeholder="Titular" class="form-control input-md">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-12" for="Cpf">CPF</label>
+                    <div class="col-md-12">
+                        <input id="Cpf" asp-for="@m.ContaOrigem.Pessoa.Cpf" name="ContaClienteCPF" type="text" disabled placeholder="CPF titular" class="form-control input-md">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-12" for="Saldo">Saldo</label>
+                    <div class="col-md-12">
+                        @if(@m.ContaOrigem.Saldo > 0) { 
+                        <input id="Saldo" style="color:green; font-weight:bold;" asp-for="@m.ContaOrigem.Saldo" name="Saldo" type="text" disabled placeholder="Saldo R$" class="form-control input-md">
+                        }
+                        else
+                        {
+                    <input id="Saldo" style="color:red; font-weight:bold;" asp-for="@m.ContaOrigem.Saldo" name="Saldo" type="text" disabled placeholder="Saldo R$" class="form-control input-md">
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="col-md-12" for="CriadoEm">Cliente desde</label>
+                    <div class="col-md-12">
+                        <input id="CriadoEm" asp-for="@m.ContaOrigem.CriadoEm" name="CriadoEm" type="text" disabled placeholder="Data do cadastro" class="form-control input-md">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="col-md-12" for="Status">Status</label>
+                    <div class="col-md-12">
+                        @if (@m.Status == true)
+                        {
+                            <input id="Status" style="color:green; font-weight:bold;" value="Ativo" name="Status" type="text" disabled placeholder="Status" class="form-control input-md">
+                        }
+                        else
+                        {
+                            <input id="Status" style="color:red; font-weight:bold;" value="Inativo" name="Status" type="text" disabled placeholder="Status" class="form-control input-md">
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Conta Origem
+            </th>
+            <th>
+                Conta Destino
+            </th>
+            <th>
+                Tipo movimentação
+            </th>
+            <th>
+                Valor movimentado
+            </th>
+            <th>
+                Data movimentação
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in movimentacoes)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdMovimento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContaOrigem.IdContaCliente)
+                    @*@Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Nome)
+                        @Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Cpf)*@
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContaDestino.IdContaCliente)
+                    @*@Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Nome)
+                        @Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Cpf)*@
+                </td>
+
+                @if (item.TipoMovimentacao == "Saque")
+                {
+                    <td style="color:red; font-weight:bold;">
+                        @Html.DisplayFor(modelItem => item.TipoMovimentacao)
+                    </td>
+                }
+                else
+                {
+                    <td style="color:green; font-weight:bold;">
+                        @Html.DisplayFor(modelItem => item.TipoMovimentacao)
+                    </td>
+                }
+
+
+                @if (item.Valor < 0)
+                {
+                    <td style="color:red; font-weight:bold;">
+                        @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                }
+                else
+                {
+                    <td style="color:green; font-weight:bold;">
+                        @Html.DisplayFor(modelItem => item.Valor)
+                    </td>
+                }
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.DtMovimentacao)
+                </td>
+                <td>
+                    @*<a asp-action="Edit" asp-route-id="@item.IdMovimento">Editar</a> |*@
+                    <a asp-action="Details" asp-route-id="@item.IdMovimento">Detalhes</a> 
+                    @*<a asp-action="Delete" asp-route-id="@item.IdMovimento">Deletar</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

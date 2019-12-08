@@ -7,40 +7,45 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Repository;
+using Newtonsoft.Json;
 
 namespace Bank.Controllers
 {
     public class MovimentacaoController : Controller
     {
         private readonly Context _context;
+        private readonly MovimentacaoDAO _movimentacaoDAO;
+        private readonly ContaClienteDAO _contaClienteDAO;
 
-        public MovimentacaoController(Context context)
+        public MovimentacaoController(Context context, MovimentacaoDAO movimentacaoDAO, ContaClienteDAO contaClienteDAO)
         {
             _context = context;
+            _movimentacaoDAO = movimentacaoDAO;
+            _contaClienteDAO = contaClienteDAO;
         }
 
+        #region Default
         // GET: Movimentacao
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Movimentacoes.ToListAsync());
+            return View(_movimentacaoDAO.ListarTodos());
         }
 
         // GET: Movimentacao/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            var movimentacao = await _context.Movimentacoes
-                .FirstOrDefaultAsync(m => m.IdMovimento == id);
-            if (movimentacao == null)
+            Movimentacao m = _movimentacaoDAO.BuscarPorId(id);
+            if (m == null)
             {
                 return NotFound();
             }
 
-            return View(movimentacao);
+            return View(m);
         }
 
         // GET: Movimentacao/Create
@@ -133,10 +138,12 @@ namespace Bank.Controllers
         // POST: Movimentacao/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int IdMovimentacao)
+        public async Task<IActionResult> DeleteConfirmed(int IdMovimento)
         {
-            var movimentacao = await _context.Movimentacoes.FindAsync(IdMovimentacao);
-            _context.Movimentacoes.Remove(movimentacao);
+            //Movimentacao m = _movimentacaoDAO.BuscarPorId(IdMovimentacao);
+            //var movimentacao = await _context.Movimentacoes.FindAsync(IdMovimentacao);
+            //_context.Movimentacoes.Remove(movimentacao);
+            _movimentacaoDAO.RemoverPorId(IdMovimento);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -145,5 +152,92 @@ namespace Bank.Controllers
         {
             return _context.Movimentacoes.Any(e => e.IdMovimento == id);
         }
+
+        #endregion
+
+        #region Extrato
+        public IActionResult Conta()
+        {
+            Movimentacao m;
+
+            if (TempData["ContaEncontrada"] != null)
+            {
+                m = new Movimentacao();
+                m = JsonConvert.DeserializeObject<Movimentacao>(TempData["ContaEncontrada"].ToString());
+                return View(m);
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Conta(Movimentacao m)
+        {
+            List<Movimentacao> extratoCliente = _movimentacaoDAO.ListarTodos(m.ContaOrigem.IdContaCliente);
+
+            if (extratoCliente == null)
+            {
+                ModelState.AddModelError("", "Cliente sem movimentações.");
+            }
+
+            else
+            {
+                if (ModelState.IsValid)
+                {
+
+                    //if (valorSaque > conta.Saldo)
+                    //{
+                    //    ModelState.AddModelError("", "Não é possivel sacar, saldo insuficiente!");
+                    //}
+                    //else
+                    //{
+                    //ViewBag.ExtratoPorCliente = extratoCliente;
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(ExtratoPorCliente));
+                    //}
+                }
+            }
+            return View(m);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BuscarContaClienteSaque(Movimentacao m)
+        {
+            ContaCliente c = _contaClienteDAO.BuscarPorId(m.ContaOrigem.IdContaCliente);
+
+            if (c == null)
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+
+            m.ContaOrigem = c;
+
+            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(m);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Conta));
+        }
+
+
+        public async Task<IActionResult> ExtratoPorCliente(int id)
+        {
+            Movimentacao m = new Movimentacao();
+            m.ContaOrigem = _contaClienteDAO.BuscarPorId(id);
+
+            List<Movimentacao> extratoCliente = _movimentacaoDAO.ListarTodos(id);
+            ViewBag.ExtratoPorCliente = extratoCliente;
+            ViewBag.ContaEncontrada = m;
+            return View(extratoCliente);
+        }
+
+        //[HttpPost, ActionName("ExtratoPorCliente")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> ExtratoPorCliente(Movimentacao m)
+        //{
+           
+        //}
+
+
+        #endregion
     }
 }
