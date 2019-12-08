@@ -52,6 +52,7 @@ namespace Bank.Controllers
         // GET: ContaCliente/Create
         public IActionResult Create()
         {
+            ViewBag.Contas = _contaDAO.ListarTodos();
             return View();
         }
 
@@ -60,7 +61,7 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdContaCliente,Limite,Saldo,Status,CriadoEm")] ContaCliente contaCliente)
+        public async Task<IActionResult> Create(ContaCliente contaCliente)
         {
             if (ModelState.IsValid)
             {
@@ -287,81 +288,6 @@ namespace Bank.Controllers
 
         #endregion
 
-        #region Transferencia
-
-        public async Task<IActionResult> BuscarContaClienteOrigem(ContaCliente c)
-        {
-            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
-
-            if (c == null)
-            {
-                ModelState.AddModelError("", "Conta não encontrada!");
-            }
-
-            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Transferencia));
-        }
-
-        public async Task<IActionResult> BuscarContaClienteDestino(ContaCliente c)
-        {
-            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
-
-            if (c == null)
-            {
-                ModelState.AddModelError("", "Conta não encontrada!");
-            }
-
-            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Transferencia));
-        }
-
-        public IActionResult Transferencia()
-        {
-            ContaCliente c;
-
-            if (TempData["ContaEncontrada"] != null)
-            {
-                c = new ContaCliente();
-                c = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaEncontrada"].ToString());
-                return View(c);
-            }
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Transferencia(int IdContaOrigem, int IdContaDestino, double ValorTransf)
-        {
-            var contaOrigem = _contaClienteDAO.BuscarPorId(IdContaOrigem);
-            var contaDestino = _contaClienteDAO.BuscarPorId(IdContaDestino);
-
-            if (contaOrigem == null && contaOrigem == contaDestino)
-            {
-                ModelState.AddModelError("", "Conta de origem não encontrada!");
-
-                if (contaDestino == null)
-                {
-                    ModelState.AddModelError("", "Conta de destino não foi encontrada!");
-                }
-                else
-                {
-                    var isValid = _contaClienteDAO.RealizarTransferencia(contaOrigem, contaDestino, ValorTransf);
-                    
-                    if (isValid)
-                    {
-                        _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
-            }
-            return View();
-        }
-
-        #endregion
 
     }
 }
