@@ -79,7 +79,9 @@ namespace Repository
 
                 m.DtMovimentacao = DateTime.Now;
                 m.ContaOrigem = conta;              //
+                m.ContaDestino = conta;
                 m.TipoMovimentacao = "Saque";
+                m.Valor = -ValorSaque;
 
                 _movimentacaoDAO.Cadastrar(m);
                 _context.SaveChanges();
@@ -97,6 +99,8 @@ namespace Repository
 
             m.DtMovimentacao = DateTime.Now;
             m.ContaOrigem = conta;              //
+            m.ContaDestino = conta;
+            m.Valor = ValorDeposito;
             m.TipoMovimentacao = "Deposito";
 
             _movimentacaoDAO.Cadastrar(m);
