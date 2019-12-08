@@ -52,6 +52,9 @@ namespace Bank.Controllers
         // GET: ContaCliente/Create
         public IActionResult Create()
         {
+            List<Conta> contas = _contaDAO.ListarTodos();
+            ViewBag.Contas = contas;
+
             return View();
         }
 
@@ -60,7 +63,7 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdContaCliente,Limite,Saldo,Status,CriadoEm")] ContaCliente contaCliente)
+        public async Task<IActionResult> Create(ContaCliente contaCliente, int IdConta)
         {
             if (ModelState.IsValid)
             {
