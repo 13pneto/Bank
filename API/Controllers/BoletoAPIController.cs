@@ -57,5 +57,67 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Route("Efetivar/{id}")]
+        [HttpGet]
+        public IActionResult Efetivar([FromRoute]int id)
+        {
+            Boleto boleto = _boletoDAO.BuscarPorId(id);
+            if (boleto.Status == "PG")
+            {
+                return NotFound();
+            }
+            else if (boleto.Status == "ES")
+            {
+                return NotFound();
+            }
+            else
+            {
+
+                if (boleto != null)
+                {
+                    if (_boletoDAO.EfetivarBoletoAPI(boleto))
+                    {
+                        return Ok(boleto);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                return NotFound();
+            }
+        }
+
+        [Route("Estornar/{id}")]
+        [HttpGet]
+        public IActionResult Estornar([FromRoute]int id)
+        {
+            Boleto boleto = _boletoDAO.BuscarPorId(id);
+            if (boleto.Status == "NP")
+            {
+                return NotFound();
+            }
+            else if (boleto.Status == "ES")
+            {
+                return NotFound();
+            }
+            else
+            {
+
+                if (boleto != null)
+                {
+                    if (_boletoDAO.EstornarBoletoAPI(boleto))
+                    {
+                        return Ok(boleto);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+                return NotFound();
+            }
+        }
+
     }
 }
