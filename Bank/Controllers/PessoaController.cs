@@ -59,6 +59,10 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
         {
+            if (pessoa.Cpf == null)
+            {
+                ModelState.AddModelError("", "Informe um CPF!");
+            }
 
             if(ValidadorCPF.validaCpf(pessoa.Cpf) != true)
             {

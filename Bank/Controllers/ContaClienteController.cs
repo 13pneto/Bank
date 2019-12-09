@@ -17,6 +17,8 @@ namespace Bank.Controllers
         private readonly ContaDAO _contaDAO;
         private readonly ContaClienteDAO _contaClienteDAO;
         private readonly PessoaDAO _pessoaDAO;
+        public ContaCliente contaOrigemGlobal;
+        public ContaCliente contaDestinoGlobal;
 
 
         public ContaClienteController(Context context, ContaDAO contaDAO, ContaClienteDAO contaClienteDAO, PessoaDAO pessoaDAO)
@@ -69,6 +71,12 @@ namespace Bank.Controllers
             }
 
             return View(contaCliente);
+        }
+
+        public IActionResult Limpar() 
+        {
+            ModelState.Clear();
+            return View();
         }
 
         // GET: ContaCliente/Create
@@ -342,31 +350,24 @@ namespace Bank.Controllers
 
         #region Transferencia
 
-        public async Task<IActionResult> BuscarContaClienteOrigem(ContaCliente c)
+        public async Task<IActionResult> BuscarContaClientes(int ContaOrigemId, int ContaDestinoId)
         {
-            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
+            var contaOrigem = _contaClienteDAO.BuscarPorId(ContaOrigemId);
+            var contaDestino = _contaClienteDAO.BuscarPorId(ContaDestinoId);
 
-            if (c == null)
+            if (contaOrigem == null || contaDestino == null)
             {
                 ModelState.AddModelError("", "Conta não encontrada!");
             }
 
-            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
+            //ViewBag.contaOrigem = contaOrigem;
+            //ViewBag.contaDestino = contaDestino;
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Transferencia));
-        }
+            //contaOrigemGlobal = contaOrigem;
+            //contaDestinoGlobal = contaDestino;
 
-        public async Task<IActionResult> BuscarContaClienteDestino(ContaCliente c)
-        {
-            c = _contaClienteDAO.BuscarPorId(c.IdContaCliente);
-
-            if (c == null)
-            {
-                ModelState.AddModelError("", "Conta não encontrada!");
-            }
-
-            TempData["ContaEncontrada"] = JsonConvert.SerializeObject(c);
+            TempData["ContaOrigem"] = JsonConvert.SerializeObject(contaOrigem);
+            TempData["ContaDestino"] = JsonConvert.SerializeObject(contaDestino);
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Transferencia));
@@ -374,13 +375,18 @@ namespace Bank.Controllers
 
         public IActionResult Transferencia()
         {
-            ContaCliente c;
+            ContaCliente contaOrigem;
+            ContaCliente contaDestino;
 
-            if (TempData["ContaEncontrada"] != null)
+            if (TempData["ContaOrigem"] != null)
             {
-                c = new ContaCliente();
-                c = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaEncontrada"].ToString());
-                return View(c);
+            //    contaOrigem = contaOrigemGlobal;
+            //    contaDestino = contaDestinoGlobal;
+
+                contaOrigem = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaOrigem"].ToString());
+                contaDestino = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaDestino"].ToString());
+
+                return View((contaOrigem, contaDestino));
             }
             return View();
         }
