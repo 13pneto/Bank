@@ -68,6 +68,7 @@ namespace Repository
             m.ContaDestino = b.ContaOrigem;             //Para pagamento de boleto, o cliente origem e destino é a própria conta a receber, pois quem paga o boleto
             m.ContaOrigem = b.ContaOrigem;              //Não necessariamente deverá possuir uma conta, considera-se que o fiscal do sistema coletou o dinheiro e efetivou (loterica)
             m.TipoMovimentacao = "Boleto";
+            m.Valor = b.Valor;
 
             _movimentacaoDAO.Cadastrar(m);
             _context.SaveChanges();

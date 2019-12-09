@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Create";
+    // List<Conta> contas = ViewBag.Contas;
 }
 
 <h2>Cadastrar</h2>
@@ -9,7 +10,7 @@
 <h4>ContaCliente</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-7">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -18,18 +19,79 @@
                 <span asp-validation-for="Limite" class="text-danger"></span>
             </div>
 
-            <select asp-for="ContaDoCliente" class="form-group">
-                @foreach (Domain.Conta item in @ViewBag.Contas)
-                {
-                    <option class="dropdown-item" value="@item">@item.Nome</option>
-                }
-            </select>
+            <div class="form-group">
+                <label class="control-label">Pessoa/Cliente</label>
+                <input asp-for="Pessoa.IdCliente" class="form-control" />
+                <span asp-validation-for="Pessoa.IdCliente" class="text-danger"></span>
+                <input type="submit" style="margin-top:2%" asp-action="BuscarPessoa" value="Buscar" class="btn btn-warning" />
+            </div>
+
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label class="control-label">Conta (tipo)</label>
+
+                <select asp-for="ContaDoCliente.IdConta" style="width:100%;">
+                    @foreach (Conta item in @ViewBag.Contas)
+                    {
+                        <option class="dropdown-item" value="@item.IdConta">@item.Nome</option>
+                    }
+                </select>
             </div>
+            @if (Model != null)
+            {
+                <div class="form-group">
+                    <input type="submit" style="width:100%;" value="Cadastrar" class="btn btn-success" />
+                </div>
+            }
         </form>
     </div>
+
+
+    <div class="col-md-5">
+
+        @*-------------------------------Pessoa encontrada--------------------------------*@
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="IdConta">Id Pessoa</label>
+            <div class="col-md-12">
+                <input id="Id" asp-for="Pessoa.IdCliente" name="IdPessoa" type="text" disabled placeholder="Numero da conta" class="form-control input-md">
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="Titular">Nome</label>
+            <div class="col-md-12">
+                <input id="Nome" asp-for="Pessoa.Nome" name="Nome" type="text" disabled placeholder="Titular" class="form-control input-md">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="Cpf">CPF</label>
+            <div class="col-md-12">
+                <input id="Cpf" asp-for="Pessoa.Cpf" name="eCPF" type="text" disabled placeholder="CPF titular" class="form-control input-md">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="CriadoEm">Cliente desde</label>
+            <div class="col-md-12">
+                <input id="CriadoEm" asp-for="Pessoa.CriadoEm" name="CriadoEm" type="text" disabled placeholder="Data do cadastro" class="form-control input-md">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="Status">Status</label>
+            <div class="col-md-12">
+                <input id="Status" asp-for="Pessoa.Status" name="Status" type="text" disabled placeholder="Status" class="form-control input-md">
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <input type="submit" style="width:100%" value="Limpar" class="btn btn-danger" />
+        </div>
+
+    </div>
+
 </div>
 
 <div>

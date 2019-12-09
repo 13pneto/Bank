@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.IdBoleto)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.DtVencimento)
             </th>
             <th>
@@ -40,10 +43,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.IdBoleto)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.DtVencimento)
             </td>
             <td>
-               R$ @Html.DisplayFor(modelItem => item.Valor)
+                R$ @Html.DisplayFor(modelItem => item.Valor)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CriadoEm)

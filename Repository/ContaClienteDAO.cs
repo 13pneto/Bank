@@ -38,7 +38,7 @@ namespace Repository
 
         public List<ContaCliente> ListarTodos()
         {
-            return _context.ContaClientes.ToList();
+            return _context.ContaClientes.Include(x=> x.ContaDoCliente).ToList();
         }
 
         public bool RemoverPorId(int id)

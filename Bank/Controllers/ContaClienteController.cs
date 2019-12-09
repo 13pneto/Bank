@@ -16,15 +16,37 @@ namespace Bank.Controllers
         private readonly Context _context;
         private readonly ContaDAO _contaDAO;
         private readonly ContaClienteDAO _contaClienteDAO;
+        private readonly PessoaDAO _pessoaDAO;
 
-        public ContaClienteController(Context context, ContaDAO contaDAO, ContaClienteDAO contaClienteDAO)
+
+        public ContaClienteController(Context context, ContaDAO contaDAO, ContaClienteDAO contaClienteDAO, PessoaDAO pessoaDAO)
         {
             _contaClienteDAO = contaClienteDAO;
             _contaDAO = contaDAO;
             _context = context;
+            _pessoaDAO = pessoaDAO;
         }
 
         #region Defaults
+
+        public async Task<IActionResult> BuscarPessoa(ContaCliente c)
+        {
+            c.Pessoa = _pessoaDAO.BuscarPorId(c.Pessoa.IdCliente);
+
+            if (c.Pessoa == null)
+            {
+                ModelState.AddModelError("", "Pessoa não encontrada!");
+            }
+
+            TempData["PessoaEncontrada"] = JsonConvert.SerializeObject(c);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Create));
+        }
+
+        
+
+
         // GET: ContaCliente
         public async Task<IActionResult> Index()
         {
@@ -51,10 +73,19 @@ namespace Bank.Controllers
 
         // GET: ContaCliente/Create
         public IActionResult Create()
-        {
+         {
+            ContaCliente c;
+
             List<Conta> contas = _contaDAO.ListarTodos();
+            //ViewBag.Contas = new SelectList(contas);
             ViewBag.Contas = contas;
 
+            if (TempData["PessoaEncontrada"] != null)
+            {
+                c = new ContaCliente();
+                c = JsonConvert.DeserializeObject<ContaCliente>(TempData["PessoaEncontrada"].ToString());
+                return View(c);
+            }
             return View();
         }
 
@@ -65,11 +96,30 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContaCliente contaCliente, int IdConta)
         {
-            if (ModelState.IsValid)
+            Conta c = _contaDAO.BuscarPorId(contaCliente.ContaDoCliente.IdConta);
+            Pessoa p = _pessoaDAO.BuscarPorId(contaCliente.Pessoa.IdCliente);
+            contaCliente.ContaDoCliente = c;
+            contaCliente.Pessoa = p;
+
+            if(contaCliente.Pessoa == null)
             {
-                _context.Add(contaCliente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Pessoa não encontrada!");
+            }
+
+            if(contaCliente.ContaDoCliente == null)
+            {
+                ModelState.AddModelError("", "Tipo de conta não Encontrada/Selecionada!");
+            }
+
+            else
+            {
+                //if (ModelState.IsValid)
+                //{
+                    _context.Add(contaCliente);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                //}
+                
             }
             return View(contaCliente);
         }
@@ -144,8 +194,8 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int IdContaCliente)
         {
-            var contaCliente = await _context.ContaClientes.FindAsync(IdContaCliente);
-            _context.ContaClientes.Remove(contaCliente);
+
+            _contaClienteDAO.RemoverPorId(IdContaCliente);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

@@ -166,10 +166,9 @@ namespace Bank.Controllers
         // POST: Boleto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int IdBoleto)
         {
-            var boleto = await _context.Boletos.FindAsync(id);
-            _context.Boletos.Remove(boleto);
+            _boletoDAO.RemoverPorId(IdBoleto);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

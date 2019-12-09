@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using Repository;
+using VendasConsole.Utils;
 
 namespace Bank.Controllers
 {
@@ -58,6 +59,11 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
         {
+
+            if(ValidadorCPF.validaCpf(pessoa.Cpf) != true)
+            {
+                ModelState.AddModelError("","CPF inválido!");
+            }
 
             if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo))
             {
