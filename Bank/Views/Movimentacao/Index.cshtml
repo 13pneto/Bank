@@ -13,28 +13,73 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Valor)
+                ID
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DtMovimentacao)
+                Conta Origem
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                Conta Destino
+            </th>
+            <th>
+                Tipo movimentação
+            </th>
+            <th>
+                Valor movimentado
+            </th>
+            <th>
+                Data movimentação
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Valor)
+                @Html.DisplayFor(modelItem => item.IdMovimento)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContaOrigem.IdContaCliente)
+                @*@Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Nome)
+            @Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Cpf)*@
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContaDestino.IdContaCliente)
+                @*@Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Nome)
+            @Html.DisplayFor(modelItem => item.ContaOrigem.Pessoa.Cpf)*@
+            </td>
+
+            @if (item.TipoMovimentacao == "Saque")
+            {
+                <td style="color:red; font-weight:bold;">
+                    @Html.DisplayFor(modelItem => item.TipoMovimentacao)
+                </td>
+            }
+            else
+            {
+                <td style="color:green; font-weight:bold;">
+                    @Html.DisplayFor(modelItem => item.TipoMovimentacao)
+                </td>
+            }
+
+
+            @if (item.Valor < 0)
+            {
+                <td style="color:red; font-weight:bold;">
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+            }
+            else
+            {
+                <td style="color:green; font-weight:bold;">
+                    @Html.DisplayFor(modelItem => item.Valor)
+                </td>
+            }
+
             <td>
                 @Html.DisplayFor(modelItem => item.DtMovimentacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.IdMovimento">Editar</a> |
@@ -42,6 +87,6 @@
                 <a asp-action="Delete" asp-route-id="@item.IdMovimento">Deletar</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>

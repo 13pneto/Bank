@@ -16,8 +16,7 @@
         }
 
 
-        .control-label
-        {
+        .control-label {
             font-weight: bold;
         }
     </style>
@@ -62,8 +61,14 @@
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="/Movimentacao">Extrato</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle fontNav" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Extrato
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Movimentacao">Todos</a>
+                    <a class="dropdown-item" href="/Movimentacao/Conta">Por conta</a>
+                </div>
             </li>
         </ul>
     </nav>

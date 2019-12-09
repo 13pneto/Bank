@@ -5,31 +5,188 @@
 }
 
 <h2>Details</h2>
+<div class="row">
 
-<div>
-    <h4>Movimentacao</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Valor)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Valor)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DtMovimentacao)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DtMovimentacao)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-    </dl>
+
+    <div class="col-md-4">
+        <h4>Movimentacao</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                ID
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.IdMovimento)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Valor)
+            </dt>
+            @if (Model.Valor > 0)
+            {
+                <dd style="color:green; font-weight:bold">
+                    @Html.DisplayFor(model => model.Valor)
+                </dd>
+            }
+            else
+            {
+                <dd style="color:red; font-weight:bold">
+                    @Html.DisplayFor(model => model.Valor)
+                </dd>
+            }
+
+            <dt>
+                Tipo Movimentação
+            </dt>
+            @if (Model.TipoMovimentacao == "Deposito")
+            {
+                <dd style="color:green; font-weight:bold">
+                    @Html.DisplayFor(model => model.TipoMovimentacao)
+                </dd>
+            }
+            else
+            {
+                <dd style="color:red; font-weight:bold">
+                    @Html.DisplayFor(model => model.TipoMovimentacao)
+                </dd>
+            }
+
+            <dt>
+                Data Movimentação
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DtMovimentacao)
+            </dd>
+        </dl>
+    </div>
+
+    @*Conta ORIGEM*@
+    <div class="col-md-4">
+        <div class="alert-warning" style="text-align:center; margin-bottom:5%">
+            <b>Conta Origem</b>
+        </div>
+        <hr style="color:black; background-color:gray;" />
+        @*-------------------------------Conta encontrada--------------------------------*@
+        <div class="form-group">
+            <label class="col-md-12" for="IdConta">Conta de origem</label>
+            <div class="col-md-12">
+                <input id="Id" asp-for="ContaOrigem.IdContaCliente" name="IdContaCliente" type="text" disabled placeholder="Numero da conta" class="form-control input-md">
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label class="col-md-12" for="Titular">Titular</label>
+            <div class="col-md-12">
+                <input id="Nome" asp-for="ContaOrigem.Pessoa.Nome" name="ContaClienteNome" type="text" disabled placeholder="Titular" class="form-control input-md">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-12" for="Cpf">CPF</label>
+            <div class="col-md-12">
+                <input id="Cpf" asp-for="ContaOrigem.Pessoa.Cpf" name="ContaClienteCPF" type="text" disabled placeholder="CPF titular" class="form-control input-md">
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                <label class="col-md-12" for="Saldo">Saldo</label>
+                <div class="col-md-12">
+                    <input id="Saldo" asp-for="ContaOrigem.Saldo" name="Saldo" type="text" disabled placeholder="Saldo R$" class="form-control input-md">
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                <label class="col-md-12" for="CriadoEm">Cliente desde</label>
+                <div class="col-md-12">
+                    <input id="CriadoEm" asp-for="ContaOrigem.CriadoEm" name="CriadoEm" type="text" disabled placeholder="Data do cadastro" class="form-control input-md">
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            <label class="col-md-12" for="Status">Status</label>
+            <div class="col-md-12">
+                @if (Model.ContaOrigem.Status == true)
+                {
+                    <input id="Status" value="Ativo" name="Status" type="text" disabled placeholder="Status" class="form-control input-md" />
+                }
+                else
+                {
+                    <input id="Status" value="Inativo" name="Status" type="text" disabled placeholder="Status" class="form-control input-md" />
+                }
+            </div>
+        </div>
+
+    </div>
+
+
+    @*Conta DESTINO*@
+    @if (Model.TipoMovimentacao == "Transferencia")
+    {
+
+        <div class="col-md-4">
+            <div class="alert-warning" style="text-align:center; margin-bottom:5%">
+                <b>Conta Destino</b>
+            </div>
+            <hr style="color:black; background-color:gray;" />
+            @*-------------------------------Conta encontrada--------------------------------*@
+            <div class="form-group">
+                <label class="col-md-12" for="IdConta">Conta de origem</label>
+                <div class="col-md-12">
+                    <input id="Id" asp-for="ContaDestino.IdContaCliente" name="IdContaCliente" type="text" disabled placeholder="Numero da conta" class="form-control input-md">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-md-12" for="Titular">Titular</label>
+                <div class="col-md-12">
+                    <input id="Nome" asp-for="ContaDestino.Pessoa.Nome" name="ContaClienteNome" type="text" disabled placeholder="Titular" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12" for="Cpf">CPF</label>
+                <div class="col-md-12">
+                    <input id="Cpf" asp-for="ContaDestino.Pessoa.Cpf" name="ContaClienteCPF" type="text" disabled placeholder="CPF titular" class="form-control input-md">
+                </div>
+            </div>
+
+            @*<div class="form-group">
+                    <label class="col-md-12" for="Saldo">Saldo</label>
+                    <div class="col-md-12">
+                        <input id="Saldo" asp-for="ContaDestino.Saldo" name="Saldo" type="text" disabled placeholder="Saldo R$" class="form-control input-md">
+                    </div>
+                </div>*@
+
+            @*<div class="form-group">
+                    <label class="col-md-12" for="CriadoEm">Cliente desde</label>
+                    <div class="col-md-12">
+                        <input id="CriadoEm" asp-for="ContaDestino.CriadoEm" name="CriadoEm" type="text" disabled placeholder="Data do cadastro" class="form-control input-md">
+                    </div>
+                </div>*@
+
+            <div class="form-group">
+                <label class="col-md-12" for="Status">Status</label>
+                <div class="col-md-12">
+                    @if (Model.ContaDestino.Status == true)
+                    {
+                        <input id="Status" value="Ativo" name="Status" type="text" disabled placeholder="Status" class="form-control input-md" />
+                    }
+                    else
+                    {
+                        <input id="Status" value="Inativo" name="Status" type="text" disabled placeholder="Status" class="form-control input-md" />
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
 </div>
+
+
+
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.IdMovimento">Editar</a> |
     <a asp-action="Index">Ir para listagem</a>

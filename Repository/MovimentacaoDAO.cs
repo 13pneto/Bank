@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Repository
 
         public Movimentacao BuscarPorId(int id)
         {
-            return _context.Movimentacoes.FirstOrDefault
+            return _context.Movimentacoes.Include(x => x.ContaDestino).Include(x => x.ContaDestino.Pessoa).Include(x => x.ContaOrigem).Include(x => x.ContaOrigem.Pessoa).FirstOrDefault
             (x => x.IdMovimento.Equals(id));
         }
 
@@ -34,7 +35,12 @@ namespace Repository
 
         public List<Movimentacao> ListarTodos()
         {
-            return _context.Movimentacoes.ToList();
+            return _context.Movimentacoes.Include(x => x.ContaDestino).Include(x => x.ContaDestino.Pessoa).Include(x => x.ContaOrigem).Include(x => x.ContaOrigem.Pessoa).ToList();
+        }
+
+        public List<Movimentacao> ListarTodos(int Id) //Listar todos as movimentacoes de determinado cliente
+        {
+            return _context.Movimentacoes.Include(x => x.ContaDestino).Include(x => x.ContaDestino.Pessoa).Include(x => x.ContaOrigem).Include(x => x.ContaOrigem.Pessoa).Where(x => x.ContaOrigem.IdContaCliente == Id).ToList();
         }
 
         public bool RemoverPorId(int id)
