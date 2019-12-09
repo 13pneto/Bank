@@ -12,6 +12,7 @@ namespace Domain
         public Pessoa()
         {
             CriadoEm = DateTime.Now;
+            Status = true;
         }
 
         [Key]

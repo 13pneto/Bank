@@ -38,7 +38,7 @@ namespace Repository
 
         public List<ContaCliente> ListarTodos()
         {
-            return _context.ContaClientes.Include(x=> x.ContaDoCliente).ToList();
+            return _context.ContaClientes.Include(x => x.ContaDoCliente).ToList();
         }
 
         public bool RemoverPorId(int id)
@@ -129,6 +129,19 @@ namespace Repository
             _movimentacaoDAO.Cadastrar(m);
             _context.SaveChanges();
             return true;
+        }
+
+        public bool InativarPessoa(int idContaCliente)
+        {
+            ContaCliente c = BuscarPorId(idContaCliente);
+            if (c.Status == true)
+            {
+                c.Status = false;
+                _context.Entry(c).State = EntityState.Modified;
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Domain
         [Display(Name = "Descrição:")]
         [Required(ErrorMessage = "Campo obrigatório!")]
         public string Descricao { get; set; }
-        //public double Limite { get; set; }
+        public double Limite { get; set; }
         public bool Status { get; set; }        //true = ativo | false = inativo
         public DateTime CriadoEm { get; set; }
         //public double Saldo { get; set; }

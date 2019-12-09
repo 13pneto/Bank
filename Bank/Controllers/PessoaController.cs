@@ -59,30 +59,27 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
         {
-            if (pessoa.Cpf == null)
+            if (ValidadorCPF.validaCpf(pessoa.Cpf) != true)
             {
-                ModelState.AddModelError("", "Informe um CPF!");
-            }
-
-            if(ValidadorCPF.validaCpf(pessoa.Cpf) != true)
-            {
-                ModelState.AddModelError("","CPF inválido!");
-            }
-
-            if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo))
-            {
-                string tipo = "";
-                tipo = pessoa.Tipo == 'C' ? "Cliente" : "Funcionario";
-                ModelState.AddModelError("", string.Format("Cpf já cadastrado para este {0}", tipo));
+                ModelState.AddModelError("", "CPF inválido!");
             }
             else
             {
-
-                if (ModelState.IsValid)
+                if (_pessoaDAO.BuscarPorCpf(pessoa.Cpf, pessoa.Tipo))
                 {
-                    _context.Add(pessoa);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    string tipo = "";
+                    tipo = pessoa.Tipo == 'C' ? "Cliente" : "Funcionario";
+                    ModelState.AddModelError("", string.Format("Cpf já cadastrado para este {0}", tipo));
+                }
+                else
+                {
+
+                    if (ModelState.IsValid)
+                    {
+                        _context.Add(pessoa);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
             }
             return View(pessoa);

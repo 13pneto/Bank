@@ -11,6 +11,11 @@ namespace VendasConsole.Utils
 
         public static bool validaCpf(string cpf)
         {
+            if(cpf == null)
+            {
+                return false;
+            }
+
             if (cpf.Length != 11)
             {
                 return false;

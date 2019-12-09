@@ -109,6 +109,7 @@ namespace Bank.Controllers
             contaCliente.ContaDoCliente = c;
             contaCliente.Pessoa = p;
 
+
             if(contaCliente.Pessoa == null)
             {
                 ModelState.AddModelError("", "Pessoa não encontrada!");
@@ -202,8 +203,7 @@ namespace Bank.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int IdContaCliente)
         {
-
-            _contaClienteDAO.RemoverPorId(IdContaCliente);
+            _contaClienteDAO.InativarPessoa(IdContaCliente);    
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -351,7 +351,7 @@ namespace Bank.Controllers
         #region Transferencia
 
         public async Task<IActionResult> BuscarContaClientes(int ContaOrigemId, int ContaDestinoId)
-        {
+            {
             var contaOrigem = _contaClienteDAO.BuscarPorId(ContaOrigemId);
             var contaDestino = _contaClienteDAO.BuscarPorId(ContaDestinoId);
 
@@ -386,7 +386,11 @@ namespace Bank.Controllers
                 contaOrigem = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaOrigem"].ToString());
                 contaDestino = JsonConvert.DeserializeObject<ContaCliente>(TempData["ContaDestino"].ToString());
 
-                return View((contaOrigem, contaDestino));
+                ContasRetorno cr = new ContasRetorno();
+                cr.C1 = contaOrigem;
+                cr.C2 = contaDestino;
+
+                return View(cr);
             }
             return View();
         }
