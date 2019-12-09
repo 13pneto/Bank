@@ -8,10 +8,34 @@
 
 <h4>ContaCliente</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group; row">
+                <div class="col-md-6">
+                    <label asp-for="ContaDoCliente.IdConta" class="control-label"></label>
+                    <input asp-for="ContaDoCliente.IdConta" class="form-control" />
+                    <span asp-validation-for="ContaDoCliente.IdConta" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Pessoa.IdCliente" class="control-label"></label>
+                    <input asp-for="Pessoa.IdCliente" class="form-control" />
+                    <span asp-validation-for="Pessoa.IdCliente" class="text-danger"></span>
+                </div>
+
+            </div>
+            <input type="submit" asp-action="BuscarDados" value="Buscar" class="btn btn-warning" />
+
+            @*<form asp-action="BuscarConta">*@
+            @*BOTÃO BUSCAR CONTA DESTINO*@
+            @*<input type="hidden" asp-for="ContaOrigem.IdConta" />*@
+            @*<input type="submit" asp-action="BuscarConta" value="Buscar" class="btn btn-warning" />*@
+            @*</form>*@
+
+
             <div class="form-group">
                 <label asp-for="Limite" class="control-label"></label>
                 <input asp-for="Limite" class="form-control" />
@@ -22,20 +46,55 @@
                 <input asp-for="Saldo" class="form-control" />
                 <span asp-validation-for="Saldo" class="text-danger"></span>
             </div>
-            <div>
-                    <select asp-for="IdContaCliente" class="form-group">
-                        @foreach (Domain.Conta item in ViewBag.Contas)
-                        {
-                        <option class="dropdown-item" value="@item.IdConta">@item.Nome</option>
-                        }
-                    </select>
-            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
+
+    <div class="col-md-6">
+        @*-------------------------------Conta encontrada--------------------------------*@
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="IdConta">IdConta</label>
+                <div class="col-md-12">
+                    <input id="IdConta" asp-for="ContaDoCliente.IdConta" name="IdConta" type="text" disabled placeholder="IdConta" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Nome">Nome da conta</label>
+                <div class="col-md-12">
+                    <input id="Nome" asp-for="ContaDoCliente.Nome" name="Nome" type="text" disabled placeholder="Nome da conta" class="form-control input-md">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-12 control-label" for="Descricao">Limite máximo</label>
+                <div class="col-md-12">
+                    <input id="Descricao" asp-for="ContaDoCliente.Descricao" name="Descricao" type="number" disabled placeholder="Limite máximo" class="form-control input-md">
+                </div>
+            </div>
+        </form>
+
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="Nome">Nome do cliente</label>
+            <div class="col-md-12">
+                <input id="Nome" asp-for="Pessoa.Nome" name="Nome" type="text" disabled placeholder="Nome do cliente " class="form-control input-md">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-12 control-label" for="CPF">CPF</label>
+            <div class="col-md-12">
+                <input id="Cpf" asp-for="Pessoa.Cpf" name="Cpf" type="text" disabled placeholder="CPF" class="form-control input-md">
+            </div>
+        </div>
+
+
+    </div>
 </div>
+
 
 <div>
     <a asp-action="Index">Ir para listagem</a>

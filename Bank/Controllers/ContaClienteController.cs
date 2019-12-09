@@ -16,12 +16,14 @@ namespace Bank.Controllers
         private readonly Context _context;
         private readonly ContaDAO _contaDAO;
         private readonly ContaClienteDAO _contaClienteDAO;
+        private readonly PessoaDAO _pessoaDAO;
 
-        public ContaClienteController(Context context, ContaDAO contaDAO, ContaClienteDAO contaClienteDAO)
+        public ContaClienteController(Context context, ContaDAO contaDAO, ContaClienteDAO contaClienteDAO, PessoaDAO pessoaDAO)
         {
             _contaClienteDAO = contaClienteDAO;
             _contaDAO = contaDAO;
             _context = context;
+            _pessoaDAO = pessoaDAO;
         }
 
         #region Defaults
@@ -49,23 +51,50 @@ namespace Bank.Controllers
             return View(contaCliente);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuscarDados(ContaCliente contacliente, Pessoa pessoa)
+        {
+            var contaEncontrada = _contaDAO.BuscarPorId(contacliente.ContaDoCliente.IdConta);
+            var pessoaEncontrada = _pessoaDAO.BuscarPorId(contacliente.Pessoa.IdCliente);
+
+            if (contaEncontrada == null)
+            {
+                ModelState.AddModelError("", "Conta não encontrada!");
+            }
+
+            TempData["Conta"] = JsonConvert.SerializeObject(contaEncontrada);
+            TempData["Pessoa"] = JsonConvert.SerializeObject(pessoaEncontrada);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Create));
+        }
+
         // GET: ContaCliente/Create
         public IActionResult Create()
         {
-            List<Conta> contas = _contaDAO.ListarTodos();
-            ViewBag.Contas = contas;
+            ContaCliente contaCliente;
 
+            if (TempData["Conta"] != null)
+            {
+                contaCliente = new ContaCliente();
+                contaCliente.ContaDoCliente = JsonConvert.DeserializeObject<Conta>(TempData["Conta"].ToString());
+                contaCliente.Pessoa = JsonConvert.DeserializeObject<Pessoa>(TempData["Pessoa"].ToString());
+                return View(contaCliente);
+            }
             return View();
         }
 
         // POST: ContaCliente/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ContaCliente contaCliente, int IdConta)
+        public async Task<IActionResult> Create(ContaCliente contaCliente)
         {
-            if (ModelState.IsValid)
+            contaCliente.ContaDoCliente = _contaDAO.BuscarPorId(contaCliente.ContaDoCliente.IdConta);
+            contaCliente.Pessoa = _pessoaDAO.BuscarPorId(contaCliente.Pessoa.IdCliente);
+
+            if (ModelState.IsValid != true)
             {
                 _context.Add(contaCliente);
                 await _context.SaveChangesAsync();
