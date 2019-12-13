@@ -31,6 +31,8 @@ namespace Domain
         [Required(ErrorMessage = "Campo obrigatório!")]
         public bool Status { get; set; }
 
+        public char Sexo { get; set; }
+
 
         public DateTime CriadoEm { get; set; }
         public char Tipo { get; set; }        //C - Cliente | F - Funcionario | A- Adm

@@ -57,7 +57,7 @@ namespace Bank.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,CriadoEm,Tipo")] Pessoa pessoa)
+        public async Task<IActionResult> Create([Bind("IdCliente,Nome,Cpf,Status,Sexo,CriadoEm,Tipo")] Pessoa pessoa)
         {
             if (ValidadorCPF.validaCpf(pessoa.Cpf) != true)
             {
